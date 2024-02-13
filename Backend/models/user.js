@@ -8,8 +8,14 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    email: String,
-    passwordHash: String,
+    email: {
+        type: String,
+        required: true
+    },
+    passwordHash: {
+        type: String,
+        required: true
+    }
 })
 
 userSchema.plugin(mongooseUniqueValidator)

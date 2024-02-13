@@ -1,0 +1,17 @@
+{
+    "name": "sawwit",
+    "version": "0.0.1",
+    "description": "Reddit Clone",
+    "scripts": {
+        "start": "concurrently \"npm run backend\" \"npm run frontend\"",
+        "test": "concurrently \"npm run backendTest\" \"npm run frontend\"",
+        "frontend": "cd frontend && npm run dev",
+        "backend": "cd backend && npm run start",
+        "backendTest": "cd backend && npm run dev"
+    },
+    "author": "Darius Karneckij",
+    "license": "MIT",
+    "devDependencies": {
+        "concurrently": "^8.2.2"
+    }
+}

@@ -10,11 +10,12 @@ require('express-async-errors')
 const middleware = require('./utils/middleware')
 
 //Setup routers
-// const authRouter = require('./controllers/auth')
-// const subredditsRouter = require('./controllers/subreddits')
+const loginRouter = require('./controllers/login')
+const usersRouter = require('./controllers/users')
+const subredditsRouter = require('./controllers/subreddits')
+const testsRouter = require('./controllers/tests')
 // const postsRouter = require('./controllers/posts')
 // const commentsRouter = require('./controllers/comments')
-const usersRouter = require('./controllers/users')
 // const searchesRouter = require('./controllers/searches')
 
 //Connect to MongoDB Server
@@ -22,11 +23,11 @@ mongoose.set('strictQuery', false)
 
 logger.info('connecting to MongoDB')
 
-if (process.env.NODE_ENV === 'test') {
+if (process.env.NODE_ENV !== 'production') {
     // Start the in-memory MongoDB server
 
     const { MongoMemoryServer } = require('mongodb-memory-server');
-
+    logger.info('Creating in-memory MongoDB server')
     (async () => {
         const mongoServer = await MongoMemoryServer.create();
         config.MONGODB_URI = await mongoServer.getUri()
@@ -49,11 +50,12 @@ app.use(express.json())
 app.use(middleware.requestLogger)
 
 //Use Routers
-// app.use('/api/auth', authRouter)
-// app.use('/api/subreddits', subredditsRouter)
+app.use('/api/login', loginRouter)
+app.use('/api/users', usersRouter)
+app.use('/api/subreddits', subredditsRouter)
+app.use('/api/tests', testsRouter)
 // app.use('/api/posts', postsRouter)
 // app.use('/api/comments', commentsRouter)
-app.use('/api/users', usersRouter)
 // app.use('/api/searches', searchesRouter)
 
 //Use Middleware
