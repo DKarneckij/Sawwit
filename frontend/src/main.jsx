@@ -1,12 +1,6 @@
+import React from 'react'
 import ReactDOM from 'react-dom/client'
-import axios from 'axios'
+import App from './App.jsx'
 import './index.css'
-import App from './App'
-
-const promise = axios.get('http://localhost:3001/api/tests/')
-
-promise.then(response => {
-  console.log(response)
-})
 
 ReactDOM.createRoot(document.getElementById('root')).render(<App />)

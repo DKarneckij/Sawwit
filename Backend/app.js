@@ -24,10 +24,10 @@ mongoose.set('strictQuery', false)
 logger.info('connecting to MongoDB')
 
 if (process.env.NODE_ENV !== 'production') {
-    // Start the in-memory MongoDB server
 
-    const { MongoMemoryServer } = require('mongodb-memory-server');
+    // Start the in-memory MongoDB server
     logger.info('Creating in-memory MongoDB server')
+    const { MongoMemoryServer } = require('mongodb-memory-server');
     (async () => {
         const mongoServer = await MongoMemoryServer.create();
         config.MONGODB_URI = await mongoServer.getUri()
