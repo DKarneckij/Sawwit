@@ -1,0 +1,11 @@
+@media screen and (max-width: 1200px) {
+    .profile-info {
+        width: 20;
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    .website-name {
+      font-size: 0.75rem; /* Adjust font size */
+    }
+  }
