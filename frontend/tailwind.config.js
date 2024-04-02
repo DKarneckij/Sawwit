@@ -5,6 +5,7 @@ export default {
     content: [
       "./index.html",
       "./src/**/*.{js,ts,jsx,tsx}",
+      'node_modules/flowbite-react/lib/esm/**/*.js'
     ],
     theme: {
       extend: {
@@ -16,7 +17,8 @@ export default {
           search_background: '#f6f7f8',
           search_color: '#878a8c',
           karma_color: '#a8aaab',
-          sawwit_blue: '#318CE7'
+          sawwit_blue: '#318CE7',
+          sawwit_orange:'#FF5700'
         },
       },
       screens: {
@@ -34,7 +36,7 @@ export default {
         ],
         'xl': '1400px',
       },
-      plugins: [],
+      plugins: [require('flowbite/plugin')],
     }
 }
 
