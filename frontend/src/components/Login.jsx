@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { createPortal } from 'react-dom';
+
 import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
 import LoginModal from './LoginModal';
 import SignUpModal from './SignUpModal';
@@ -10,7 +12,7 @@ const Login = () => {
 
   const onCloseModal = () => {
     setOpenModal(false);
-    setEmail('');
+    setShowLogin(true);
   }
 
   return (   
@@ -19,12 +21,13 @@ const Login = () => {
             Log In
         </button>
 
-        <Modal dismissible show={openModal} size="lg" onClose={onCloseModal} popup className='my-auto'>
-        <Modal.Header />
-        <Modal.Body>
-          {showLogin ? <LoginModal setShowLogin={setShowLogin}/> : <SignUpModal setShowLogin={setShowLogin}/>}
-        </Modal.Body>
-      </Modal>
+        <Modal dismissible show={openModal} size="lg" onClose={onCloseModal} popup className='py-48'>
+            <Modal.Header />
+            <Modal.Body>
+              {showLogin ? <LoginModal setShowLogin={setShowLogin}/> : <SignUpModal setShowLogin={setShowLogin}/>}
+            </Modal.Body>
+        </Modal>
+    
     </React.Fragment>
   )
 }

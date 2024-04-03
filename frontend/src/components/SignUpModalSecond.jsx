@@ -3,22 +3,25 @@ import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
 
 export default function SignUpModalSecond(props) {
 
-  const { setShowLogin, setFirstPart } = props
+  const { setShowLogin, setFirstPart, username, setUsername, password, setPassword, handleSignUp } = props
 
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const backToFirst = () => {
+    setPassword('')
+    setUsername('')
+    setFirstPart(true)
+  }
 
   return (
     <>
       <div className="space-y-6 px-10 h-[350px]">
-        <Button onClick={() => setFirstPart(true)}>Go Back</Button>
+        <Button onClick={backToFirst}>Go Back</Button>
         <h1 className="text-[25px] font-bold text-gray-900 dark:text-white">Create your username and password </h1>
           <div>
             <TextInput
               id="username"
               placeholder="Username"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              value={username}
+              onChange={(event) => setUsername(event.target.value)}
               type='username'
               required
             />
@@ -41,7 +44,7 @@ export default function SignUpModalSecond(props) {
           </div>
       </div>
       <div className="flex justify-center">
-            <Button className='bg-sawwit_blue rounded-full w-[250px] font-bold'>Sign Up</Button>
+            <Button onClick={handleSignUp} className='bg-sawwit_blue rounded-full w-[250px] font-bold'>Sign Up</Button>
         </div>
     </>
   )

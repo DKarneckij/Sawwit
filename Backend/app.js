@@ -30,7 +30,6 @@ if (process.env.NODE_ENV !== 'production') {
     const { MongoMemoryServer } = require('mongodb-memory-server');
     (async () => {
         const mongoServer = await MongoMemoryServer.create();
-        config.MONGODB_URI = await mongoServer.getUri()
     })
 }
 
@@ -41,6 +40,7 @@ mongoose.connect(config.MONGODB_URI)
 .catch((error) => {
     logger.error('error connecting to MongoDB:', error.message)
 })
+
 
 
 //Use Middleware

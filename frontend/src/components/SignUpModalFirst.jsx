@@ -3,10 +3,7 @@ import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
 
 export default function SignUpModalFirst(props) {
 
-  const { setShowLogin, setFirstPart } = props
-
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const { setShowLogin, setFirstPart, setEmail, email } = props
 
   return (
     <>
@@ -15,7 +12,7 @@ export default function SignUpModalFirst(props) {
           <div>
             <TextInput
               id="email"
-              placeholder="Email or Username"
+              placeholder="Email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               type='name'

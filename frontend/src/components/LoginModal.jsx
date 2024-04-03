@@ -1,12 +1,30 @@
 import React, { useState } from 'react'
 import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
+import loginService from '../services/login'
+import {useAuth} from '../contexts/auth'
 
 export default function LoginModa(props) {
 
   const { setShowLogin } = props
+  const { signin } = useAuth();
 
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
+
+  const handleLogin = async () => {
+    
+    try {
+
+      const user = await loginService.login({
+        identifier, password
+      })
+      console.log("Received Login From Backend:", user)
+      signin(user)
+      
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
 
   return (
     <>
@@ -14,10 +32,10 @@ export default function LoginModa(props) {
         <h1 className="text-[25px] font-bold text-gray-900 dark:text-white">Log In</h1>
           <div>
             <TextInput
-              id="email"
+              id="identifier"
               placeholder="Email or Username"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              value={identifier}
+              onChange={(event) => setIdentifier(event.target.value)}
               type='name'
               required
             />
@@ -45,7 +63,7 @@ export default function LoginModa(props) {
           </div>
       </div>
       <div className="flex justify-center">
-            <Button className='bg-sawwit_blue rounded-full w-[250px] font-bold'>Log In</Button>
+            <Button onClick={handleLogin} className='bg-sawwit_blue rounded-full w-[250px] font-bold'>Log In</Button>
         </div>
     </>
   )
