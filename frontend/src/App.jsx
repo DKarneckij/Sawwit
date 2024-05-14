@@ -1,22 +1,26 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import { Route, Routes } from 'react-router-dom';
 
-import { AuthProvider, useAuth } from './contexts/auth';
-import NavbarLoggedIn from './components/NavbarLoggedIn';
-import NavbarLoggedOut from './components/NavbarLoggedOut';
+import { AuthProvider} from './contexts/auth';
+import MainLayout from './components/layout/MainLayout'
+import TestLayout from './components/layout/TestLayout'
 
 const App = () => {
 
-  const { user } = useAuth();
+  useEffect(() => {
+    console.log("A")
+  }, []);
 
   return (
+    <AuthProvider>
       <Routes>
         <Route 
           path="/" 
-          element={ !!user ? <NavbarLoggedIn /> : <NavbarLoggedOut />}>     
+          element={<TestLayout />}>     
         </Route>
       </Routes>
+    </AuthProvider>
   );
 }
 

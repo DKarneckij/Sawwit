@@ -1,26 +1,20 @@
 import React, { useState } from 'react'
 import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
-import loginService from '../services/login'
-import {useAuth} from '../contexts/auth'
+import userService from '../../services/userService'
+import {useAuth} from '../../contexts/auth'
 
-export default function LoginModa(props) {
+export default function LoginModal(props) {
 
   const { setShowLogin } = props
-  const { signin } = useAuth();
+  const { login } = useAuth();
 
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
-    
     try {
-
-      const user = await loginService.login({
-        identifier, password
-      })
-      console.log("Received Login From Backend:", user)
-      signin(user)
-      
+      const user = await userService.login({identifier, password})
+      login(user) 
     } catch (error) {
       console.log(error.message);
     }

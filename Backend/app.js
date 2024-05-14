@@ -10,6 +10,7 @@ require('express-async-errors')
 const middleware = require('./utils/middleware')
 
 //Setup routers
+const meRouter = require('./controllers/me')
 const loginRouter = require('./controllers/login')
 const usersRouter = require('./controllers/users')
 const subredditsRouter = require('./controllers/subreddits')
@@ -50,6 +51,7 @@ app.use(express.json())
 app.use(middleware.requestLogger)
 
 //Use Routers
+app.use('/api/me', meRouter)
 app.use('/api/login', loginRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/subreddits', subredditsRouter)

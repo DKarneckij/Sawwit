@@ -1,7 +1,8 @@
 import React, {useState} from 'react'
 import SignUpModalFirst from './SignUpModalFirst'
 import SignUpModalSecond from './SignUpModalSecond'
-import signupService from '../services/signup'
+import userService from '../../services/userService'
+import {useAuth} from '../../contexts/auth'
 
 export default function SignUpModal(props) {
 
@@ -12,18 +13,13 @@ export default function SignUpModal(props) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
+  const {login} = useAuth();
+
   const handleSignUp = async () => {
-
-    console.log("Signing up:", email, username, password)
-    
     try {
-      console.log("Here");
-      const user = await signupService.signup({
+      const user = await userService.signup({
         email, username, password})
-
-      
-      useAuth.signin(user)
-
+      login(user)
     } catch(error) {
       console.log(error.message);
     }

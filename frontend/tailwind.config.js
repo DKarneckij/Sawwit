@@ -18,7 +18,11 @@ export default {
           search_color: '#878a8c',
           karma_color: '#a8aaab',
           sawwit_blue: '#318CE7',
-          sawwit_orange:'#FF5700'
+          sawwit_orange:'#FF5700',
+          profile_dropdown_gray: '#787c7e',
+          component_border: '#d2d2d2',
+          nocommunities: '#e5e9ed',
+          nocommunities_border: '#d6d9dd'
         },
       },
       screens: {

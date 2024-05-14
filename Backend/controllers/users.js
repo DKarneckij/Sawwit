@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt')
 const usersRouter = require('express').Router()
 const User = require('../models/user')
+const generateToken = require('../controllers/utils/generateToken')
 
 usersRouter.get('/', async (request, response) => {
     User.find({}).then(users => {
@@ -10,8 +11,8 @@ usersRouter.get('/', async (request, response) => {
 
 usersRouter.get('/:id', async (request, response) => {
 
-    const user = User.findById(request.params.id)
-    
+    const user = await User.findById(request.params.id)
+
     if (user) {
         response.status(200).json(user)
     } else {
@@ -20,10 +21,11 @@ usersRouter.get('/:id', async (request, response) => {
 
 })
 
+// Creating a new User
 usersRouter.post('/', async (request, response) => {
 
     const { email, username, password } = request.body
-    console.log(email, username, password);
+    console.log(email, username, password)
 
     const saltRounds = 10
     const passwordHash = await bcrypt.hash(password, saltRounds)

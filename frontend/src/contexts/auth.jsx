@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
+import userService from "../services/userService"
 
 // Define the initial context value
 const initialAuthContext = {
@@ -18,28 +19,32 @@ const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("Checking for Logged User");
+    console.log("B");
+    // Local storage has token of the logged in user
     const storedUser = localStorage.getItem('user');
-    const user = JSON.parse(storedUser);
-
     if (storedUser) {
-      setUser(user);
-      console.log("Logged the User:", user);
+      // Gets live user data and gives it to the context
+      const loggedUser = JSON.parse(storedUser);
+      userService.setToken(loggedUser.token)
+      userService.getLoggedUser().then(live => {
+        setUser(live)})
     }
+    
   }, []);
 
-  const signin = (newUser) => {
+  const login = (newUser) => {
     localStorage.setItem('user', JSON.stringify(newUser));
     setUser(newUser);
     navigate('/', { replace: true });
   };
 
-  const signout = () => {
-    setUser(null);
-    navigate('/', { replace: true });
+  const logout = () => {
+    localStorage.removeItem('user')
+    setUser(null)
+    navigate('/', { replace: true })
   };
 
-  const value = { user, signin, signout };
+  const value = { user, login, logout };
 
   return (
     <AuthContext.Provider value={value}>

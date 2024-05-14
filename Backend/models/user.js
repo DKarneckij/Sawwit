@@ -15,20 +15,22 @@ const userSchema = new mongoose.Schema({
     passwordHash: {
         type: String,
         required: true
-    }
+    },
+    profilePicture: {
+        type: String,
+        default: 'https://res.cloudinary.com/dperxfai0/image/upload/v1715459247/assets/default_profile.png'
+    },
+    karma: {
+        type: Number,
+        default: 0
+    },
+    subredditsJoined: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Subreddit'
+      }]
 })
 
 userSchema.plugin(mongooseUniqueValidator)
-
-userSchema.set('toJSON', {
-    transform: (document, returnedObject) => {
-      returnedObject.id = returnedObject._id.toString()
-      delete returnedObject._id
-      delete returnedObject.__v
-      // the passwordHash should not be revealed
-      delete returnedObject.passwordHash
-    }
-}) 
 
 module.exports = mongoose.model('User', userSchema)
 
