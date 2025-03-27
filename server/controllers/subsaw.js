@@ -39,15 +39,15 @@ const createSubsaw = async (req, res) => {
   });
 
   const saved = await newSubsaw.save();
-
+  
   res.status(201).json(saved);
 }
 
-const getSubsaw = async (req, res) => {
+const getSubsaw = async (req, res) => {  
 
-  const { name } = req.body;
+  const { name } = req.params;
 
-  const subsaw = await Subsaw.findOne({ name });
+  const subsaw = await Subsaw.findOne({ name: name.toLowerCase() });
 
   if (!subsaw) {
       return res.status(404).json({ error: 'Subsaw not found' });

@@ -22,8 +22,6 @@ const signupUser = async (req, res) => {
   try {
     const savedUser = await user.save();
     const token = generateToken(savedUser);
-
-    console.log('Raw token:', token); 
     
     res
     .cookie('token', token, {

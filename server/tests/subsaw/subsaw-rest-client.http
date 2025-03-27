@@ -1,7 +1,11 @@
 ### Create Subsaw
-POST http://localhost:3001/api/subsaw
+POST http://localhost:3001/api/s
 Content-Type: application/json
 
 {
   "name": "TestSubsaw"
 }
+
+### Get Subsaw
+
+GET http://localhost:3001/api/s/testsubsaw

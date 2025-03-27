@@ -9,8 +9,7 @@ subsawRouter.post('/', [
   .isLength({min: 3, max: 20}).withMessage("Subsaw name must be between 3 and 20 characters")
 ], validateRequest, createSubsaw)
 
-// subsawRouter.get('/:id', getSubsaw)
-subsawRouter.post('/:displayName', getSubsaw)
+subsawRouter.get('/:name', getSubsaw)
 
 
 module.exports = subsawRouter

@@ -6,46 +6,45 @@ const { connectDB, disconnectDB } = require('../../utils/mongo');
 
 const api = supertest(app);
 
+let agent;
+
 beforeAll(async () => {
   await connectDB();
 });
 
 beforeEach(async () => {
-  await Subsaw.deleteMany({});
   await User.deleteMany({});
+  await Subsaw.deleteMany({});
+  agent = supertest.agent(app); // fresh agent per test
 });
 
 afterAll(async () => {
   await disconnectDB();
 });
 
-// ✅ Helper to create test users
-const createTestUser = async ( username ) => {
-  return await api.post('/api/auth/signup').send({
-    username: username,
-    emai: 'username@gmail.com',
-    password: 'password'
-  })
+const signup = async () => {
+  await agent.post('/api/auth/signup').send({
+    username: 'subsawtester',
+    email: 'subsaw@test.com',
+    password: 'SubsawTest123'
+  });
 };
 
 describe('GET /api/s/:name', () => {
 
-  test.only('returns subsaw info when it exists', async () => {
+  test('returns subsaw info when it exists', async () => {
 
-    const user = await createTestUser('moduser');
+    await signup();
     
     const subsawName = "TestSubsaw"
     const description = "A cool place"
-    console.log('test');
     
-    const subsaw = await api.post('api/s/').send({name: subsawName, description})
+    await agent.post('/api/s/').send({name: subsawName, description})
 
-    console.log('test');
-    
+    const res = await agent.get(`/api/s/TestSubsaw`).expect(200);
 
-    const res = await api.get(`api/s/${subsawName}`).expect(200);
-
-    expect(res.body.name).toBe('TestSubsaw');
+    expect(res.body.displayName).toBe(subsawName);
+    expect(res.body.name).toBe(subsawName.toLowerCase());
     expect(res.body.description).toBe('A cool place');
     expect(res.body.moderators).toBeDefined();
     expect(res.body.id).toBeDefined();
@@ -58,15 +57,17 @@ describe('GET /api/s/:name', () => {
 
   test('handles case-insensitive lookup (if enabled)', async () => {
 
-    const user = await createTestUser('moduser2');
+    await signup();
+    
+    const subsawName = "TestSubsaw"
+    const description = "A cool place"
 
-    const subsaw = await Subsaw.create({
+    await agent.post('/api/s/').send({
       name: 'FunnyStuff',
       description: 'Haha yes',
-      moderators: [user._id]
     });
 
     const res = await api.get('/api/s/funnystuff').expect(200);
-    expect(res.body.name).toBe('FunnyStuff');
+    expect(res.body.displayName).toBe('FunnyStuff');
   });
 });
