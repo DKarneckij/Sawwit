@@ -1,5 +1,5 @@
 const authRouter = require('express').Router();
-const { signupUser, loginUser, logoutUser, getCurrentUser } = require('../controllers/auth');
+const { signupUser, loginUser, logoutUser, getMe } = require('../controllers/auth');
 
 const { check } = require('express-validator');
 const validateRequest = require('./utils/validateRequest');
@@ -28,6 +28,6 @@ authRouter.post('/login', loginUser)
 
 authRouter.post('/logout', logoutUser)
 
-authRouter.get('/me', requireAuth, getCurrentUser)
+authRouter.get('/me', requireAuth, getMe)
 
 module.exports = authRouter

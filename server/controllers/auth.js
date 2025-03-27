@@ -95,7 +95,7 @@ const logoutUser = async (req, res) => {
   .json({ message: 'Logged out successfully' });
 }
 
-const getCurrentUser = async (req, res) => {
+const getMe = async (req, res) => {
   try {
     const user = await User.findById(req.user._id)
 
@@ -109,7 +109,7 @@ const getCurrentUser = async (req, res) => {
       email: user.email,
       profilePicture: user.profilePicture,
       karma: user.karma,
-      subredditsJoined: user.subredditsJoined
+      communitiesJoined: user.communitiesJoined
     });
   } catch (err) {
     res.status(500).json({ error: 'Something went wrong' });
@@ -120,5 +120,5 @@ module.exports = {
   signupUser,
   loginUser,
   logoutUser,
-  getCurrentUser
+  getMe
 };

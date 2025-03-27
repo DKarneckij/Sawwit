@@ -10,3 +10,5 @@ Content-Type: application/json
 }
 
 
+###Get me 
+GET http://localhost:3001/api/auth/me

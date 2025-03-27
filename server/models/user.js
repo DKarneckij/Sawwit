@@ -28,10 +28,10 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    subredditsJoined: [{
+    subsawsJoined: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Subreddit'
-      }]
+        ref: 'Subsaw'
+    }]
 })
 
 userSchema.plugin(mongooseUniqueValidator)

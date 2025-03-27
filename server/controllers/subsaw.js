@@ -23,29 +23,37 @@ const createSubsaw = async (req, res) => {
     return res.status(404).json({ error: 'User not found' });
   }  
 
+  // Get displayName (typed by user) from input — will be used both for storage & lookup
   const { name } = req.body;
 
-  const existing = await Subsaw.findOne({ name: name });
+  // Check if subsaw name (normalized lowercase) already exists
+  const existing = await Subsaw.findOne({ name: name.toLowerCase() });
   if (existing) {
     return res.status(409).json({ error: 'Subsaw name already exists' });
   }
 
+
+  // Create new subsaw and add creator as mod and subscriber
   const newSubsaw = new Subsaw({
     displayName: name,
     name: name.toLowerCase(),
     description: req.body.description || '',
-    moderators: [user],
-    date_created: new Date()
+    moderators: [user._id],
+    subscribers: [user._id],
+    subscriberCount: 1
   });
+  const savedSubsaw = await newSubsaw.save();
 
-  const saved = await newSubsaw.save();
+  // Add subsaw to user's list of joined subsaws
+  user.subsawsJoined.push(savedSubsaw._id);
+  await user.save();
   
-  res.status(201).json(saved);
+  res.status(201).json(savedSubsaw);
 }
 
 const getSubsaw = async (req, res) => {  
 
-  const { name } = req.params;
+  const name = req.params.name?.trim().toLowerCase();
 
   const subsaw = await Subsaw.findOne({ name: name.toLowerCase() });
 

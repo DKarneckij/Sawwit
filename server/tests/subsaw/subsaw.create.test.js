@@ -93,7 +93,7 @@ describe('POST /api/subsaws', () => {
       .post('/api/s')
       .send({ name: 'DuplicateName' })
       .expect(409);
-
+    
     expect(res.body.error).toContain('already exists');
   });
 });
