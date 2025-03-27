@@ -1,0 +1,1 @@
+- email/username signup uniqueness isn't fully implemented
