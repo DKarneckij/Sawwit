@@ -47,11 +47,11 @@ describe('POST /api/s/:name/join', () => {
 
     // Join the subsaw
     const joinRes = await joiningAgent.post('/api/s/testsubsaw/join').expect(200);
-    const subsawId = joinRes.body.subsaw.id;
-
+    const subsawId = joinRes.body.subsaw._id;
+    
     // Fetch the current user to confirm the subsaw was joined
     const meRes = await joiningAgent.get('/api/auth/me').expect(200);
-    const joinedSubs = meRes.body.subsawsJoined.map(sub => sub.id || sub); // handle populated or not
+    const joinedSubs = meRes.body.subsawsJoined.map(sub => sub._id || sub); // handle populated or not
 
     // Check if the joined subsaw matches what was returned
     expect(joinedSubs).toContain(subsawId);

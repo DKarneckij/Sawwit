@@ -21,7 +21,7 @@ const signupUser = async (req, res) => {
 
   try {
     const savedUser = await user.save();
-    const token = generateToken(savedUser);
+    const token = generateToken(savedUser._id);
     
     res
     .cookie('token', token, {
@@ -30,13 +30,7 @@ const signupUser = async (req, res) => {
       sameSite: 'Strict'
     })
     .status(201)
-    .json({
-      id: savedUser._id.toString(),
-      username: savedUser.username,
-      email: savedUser.email,
-      profilePicture: savedUser.profilePicture,
-      karma: savedUser.karma
-    });
+    .json(savedUser);
     
   } catch (error) {
     if (error.name === 'ValidationError') {
@@ -66,7 +60,7 @@ const loginUser = async (req, res) => {
     return res.status(401).json({error: "Invalid credentials for login"})
   }
 
-  const token = generateToken(user)
+  const token = generateToken(user._id)
 
   return res
     .cookie('token', token, {
@@ -96,25 +90,14 @@ const logoutUser = async (req, res) => {
 }
 
 const getMe = async (req, res) => {
-  try {
-    const user = await User.findById(req.user._id)
+  const token = req.token;
 
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
+  const user = await User.findById(req.token._id)
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' })
+  };
 
-    res.status(200).json({
-      id: user._id.toString(),
-      username: user.username,
-      displayName: user.displayName,
-      email: user.email,
-      profilePicture: user.profilePicture,
-      karma: user.karma,
-      subsawsJoined: user.subsawsJoined
-    });
-  } catch (err) {
-    res.status(500).json({ error: 'Something went wrong' });
-  }
+  res.status(200).json(user);
 };
 
 module.exports = {

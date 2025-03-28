@@ -7,5 +7,7 @@ Content-Type: application/json
 }
 
 ### Get Subsaw
-
 GET http://localhost:3001/api/s/tesTsubsaW
+
+### Join subsaw
+POST http://localhost:3001/api/s/testsubsaw/join

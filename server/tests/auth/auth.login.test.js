@@ -37,7 +37,7 @@ describe('POST /api/auth/login', () => {
       .post('/api/auth/login')
       .send({ identifier: email, password })
       .expect(200);
-
+      
     expect(res.body.email).toBe(email);
     expect(res.body.username).toBe(username);
   });

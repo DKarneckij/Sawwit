@@ -1,27 +1,15 @@
 const Subsaw = require('@models/subsaw');
 const User = require('@models/user');
-const jwt = require('jsonwebtoken');
 
 const createSubsaw = async (req, res) => {
-  
-  const token = req.cookies.token  
 
-  if (!token) {
-    return res.status(401).json({ error: 'Authentication required' });
-  }  
+  const userId = req.token._id
 
-  let decodedToken;
-  
-  try {
-    decodedToken = jwt.verify(token, process.env.SECRET);
-  } catch (err) {
-    return res.status(401).json({ error: 'Invalid or expired token' });
-  }
-  
-  const user = await User.findOne({ username: decodedToken.username });
+  // Find the user
+  const user = await User.findById(userId)
   if (!user) {
     return res.status(404).json({ error: 'User not found' });
-  }  
+  }
 
   // Get displayName (typed by user) from input — will be used both for storage & lookup
   const { name } = req.body;
@@ -64,22 +52,21 @@ const getSubsaw = async (req, res) => {
 };
 
 const joinSubsaw = async (req, res) => {
-  const name = req.params.name.toLowerCase();
-  const userToken = req.user;
 
-  // Fetch the full user document from DB
-  const user = await User.findOne({ username: userToken.username });
+  // Find the user
+  const userId = req.token._id
+  const user = await User.findById(userId)
   if (!user) {
     return res.status(404).json({ error: 'User not found' });
-  }
-  console.log("I was here");
+  }  
   
   // Find the subsaw
+  const name = req.params.name.toLowerCase()  
   const subsaw = await Subsaw.findOne({ name });
   if (!subsaw) {
     return res.status(404).json({ error: 'Subsaw not found' });
   }
-
+  
   // Check if user is already subscribed
   const alreadyJoined = user.subsawsJoined.some(id => id.equals(subsaw._id));
   if (alreadyJoined) {
@@ -88,26 +75,60 @@ const joinSubsaw = async (req, res) => {
 
   // Add user to subsaw & subsaw to user
   user.subsawsJoined.push(subsaw._id);
+  await user.save();
+
   subsaw.subscribers.push(user._id);
   subsaw.subscriberCount++;
-
-  await user.save();
   await subsaw.save();
 
+  // Send response
   res.status(200).json({
-    message: 'Joined successfully',
-    subsaw: {
-      id: subsaw._id.toString(),
-      name: subsaw.name,
-      displayName: subsaw.displayName,
-      description: subsaw.description,
-      subscriberCount: subsaw.subscriberCount
-    }
+  message: 'Joined successfully',
+  subsaw: {
+    _id: subsaw._id,
+    name: subsaw.name
+  }
   });
 };
+
+const leaveSub = async (req, res) => {
+  
+  const name = req.params.name.toLowerCase();
+  const token = req.token;
+
+  // Fetch the full user document from DB
+  const user = await User.findById(token._id);
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+  
+  // Find the subsaw
+  const subsaw = await Subsaw.findOne({ name });
+  if (!subsaw) {
+    return res.status(404).json({ error: 'Subsaw not found' });
+  }
+
+  // See if user is joined
+  const isJoined = user.subsawsJoined.some( _id => _id.equals(subsaw._id));
+  if (!isJoined) {
+    return res.status(400).json({ error: "You are not subscribed to this subsaw"});
+  }  
+
+  // Remove the relationship both ways
+  user.subsawsJoined.pull(subsaw._id);
+  await user.save();
+
+  subsaw.subscribers.pull(user._id);
+  subsaw.subscriberCount = subsaw.subscriberCount - 1;
+  await subsaw.save();
+
+  // Send res
+  return res.status(200).json({ message: 'Left subsaw successfully' });
+}
 
 module.exports = {
   createSubsaw,
   getSubsaw, 
-  joinSubsaw
+  joinSubsaw,
+  leaveSub
 }
