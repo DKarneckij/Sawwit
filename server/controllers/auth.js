@@ -31,7 +31,7 @@ const signupUser = async (req, res) => {
     })
     .status(201)
     .json({
-      id: savedUser._id,
+      id: savedUser._id.toString(),
       username: savedUser.username,
       email: savedUser.email,
       profilePicture: savedUser.profilePicture,
@@ -76,7 +76,7 @@ const loginUser = async (req, res) => {
     })
     .status(200)
     .json({
-      id: user._id,
+      id: user._id.toString(),
       username: user.username,
       email: user.email,
       profilePicture: user.profilePicture,
@@ -104,12 +104,13 @@ const getMe = async (req, res) => {
     }
 
     res.status(200).json({
-      id: user._id,
+      id: user._id.toString(),
       username: user.username,
+      displayName: user.displayName,
       email: user.email,
       profilePicture: user.profilePicture,
       karma: user.karma,
-      communitiesJoined: user.communitiesJoined
+      subsawsJoined: user.subsawsJoined
     });
   } catch (err) {
     res.status(500).json({ error: 'Something went wrong' });

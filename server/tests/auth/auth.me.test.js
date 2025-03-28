@@ -49,10 +49,13 @@ describe('GET /api/auth/me', () => {
       .expect(200);
 
     expect(res.body).toMatchObject({
-      id: user._id.toString(),
+      id: user.id.toString(),
       username: user.username,
+      displayName: user.displayName,
       email: user.email,
-      karma: 0
+      profilePicture: user.profilePicture,
+      karma: user.karma,
+      subsawsJoined: user.subsawsJoined
     });
 
     expect(res.body.profilePicture).toBeDefined();

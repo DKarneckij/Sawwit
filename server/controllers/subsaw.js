@@ -32,7 +32,6 @@ const createSubsaw = async (req, res) => {
     return res.status(409).json({ error: 'Subsaw name already exists' });
   }
 
-
   // Create new subsaw and add creator as mod and subscriber
   const newSubsaw = new Subsaw({
     displayName: name,
@@ -64,7 +63,51 @@ const getSubsaw = async (req, res) => {
   res.status(200).json(subsaw);
 };
 
+const joinSubsaw = async (req, res) => {
+  const name = req.params.name.toLowerCase();
+  const userToken = req.user;
+
+  // Fetch the full user document from DB
+  const user = await User.findOne({ username: userToken.username });
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+  console.log("I was here");
+  
+  // Find the subsaw
+  const subsaw = await Subsaw.findOne({ name });
+  if (!subsaw) {
+    return res.status(404).json({ error: 'Subsaw not found' });
+  }
+
+  // Check if user is already subscribed
+  const alreadyJoined = user.subsawsJoined.some(id => id.equals(subsaw._id));
+  if (alreadyJoined) {
+    return res.status(200).json({ message: 'Already joined' });
+  }
+
+  // Add user to subsaw & subsaw to user
+  user.subsawsJoined.push(subsaw._id);
+  subsaw.subscribers.push(user._id);
+  subsaw.subscriberCount++;
+
+  await user.save();
+  await subsaw.save();
+
+  res.status(200).json({
+    message: 'Joined successfully',
+    subsaw: {
+      id: subsaw._id.toString(),
+      name: subsaw.name,
+      displayName: subsaw.displayName,
+      description: subsaw.description,
+      subscriberCount: subsaw.subscriberCount
+    }
+  });
+};
+
 module.exports = {
   createSubsaw,
-  getSubsaw
+  getSubsaw, 
+  joinSubsaw
 }
