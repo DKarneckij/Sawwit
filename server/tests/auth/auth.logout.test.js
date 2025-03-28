@@ -12,6 +12,7 @@ const createAndLoginUser = async () => {
   const user = new User({
     email: 'logout@test.com',
     username: 'logoutUser',
+    displayName: 'logoutuser',
     passwordHash
   });
   await user.save();

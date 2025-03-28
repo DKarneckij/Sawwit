@@ -13,7 +13,8 @@ const createAndLoginUser = async () => {
   const user = new User({
     email: 'me@test.com',
     username: 'meuser',
-    passwordHash: await bcrypt.hash(password, 10)
+    passwordHash: await bcrypt.hash(password, 10),
+    displayName: 'meuser'
   });
   const savedUser = await user.save();
 

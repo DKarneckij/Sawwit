@@ -63,12 +63,12 @@ const loginUser = async (req, res) => {
     : await bcrypt.compare(password, user.passwordHash)
 
   if(!user || !passwordCorrect) {
-    res.status(401).json({error: "Invalid credentials for login"})
+    return res.status(401).json({error: "Invalid credentials for login"})
   }
 
   const token = generateToken(user)
 
-  res
+  return res
     .cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',

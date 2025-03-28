@@ -9,7 +9,7 @@ const { connectDB, disconnectDB } = require('@utils/mongo');
 const createTestUser = async ({ email, username, password }) => {
   const bcrypt = require('bcrypt');
   const passwordHash = await bcrypt.hash(password, 10);
-  const user = new User({ email, username, passwordHash });
+  const user = new User({ email, username, displayName: username.toLowerCase(), passwordHash });
   return await user.save();
 };
 
