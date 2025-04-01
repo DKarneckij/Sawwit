@@ -1,0 +1,40 @@
+###Sign up
+POST http://localhost:3001/api/auth/signup 
+Content-Type: application/json
+
+{
+  "email": "myn@gmail.com",
+  "username": "karb",
+  "password": "password"
+}
+
+
+###Get Me
+GET http://localhost:3001/api/auth/me
+
+
+##########################################################
+##########################################################
+##########################################################
+
+
+### Create Subsaw
+POST http://localhost:3001/api/s
+Content-Type: application/json
+
+{
+  "name": "TestSubsaw"
+}
+
+### Get Subsaw
+GET http://localhost:3001/api/s/tesTsubsaW
+
+### Join subsaw
+POST http://localhost:3001/api/s/testsubsaw/join
+
+
+##########################################################
+##########################################################
+##########################################################
+
+POST http://localhost:3001/api/s/testsubsaw/posts

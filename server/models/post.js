@@ -1,56 +1,57 @@
-const mongoose = require('mongoose')
-const mongooseUniqueValidator = require('mongoose-unique-validator')
+const mongoose = require('mongoose');
+const mongooseUniqueValidator = require('mongoose-unique-validator');
 
 const postSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        required: yes
-    },
-    type: {
-        type: String,
-        enum: ['text', 'image'],
-        required: true
-    },
-    content: {
-        type: String
-    },
-    author: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
-    subsaw: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Subsaw',
-        required: true
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    upvotes: {
-        type: Number,
-        default: 0
-    },
-    downvotes: {
-        type: Number,
-        default: 0
-    },
-    comments: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Comment'
-    }]
-})
+  type: {
+    type: String,
+    enum: ['text', 'image'],
+    required: true
+  },
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  title: {
+    type: String,
+    required: true
+  },
+  body: {
+    type: String,
+    required: function () { return this.type === 'text'; }
+  },
+  mediaUrl: {
+    type: String,
+    required: function () { return this.type === 'image'; }
+  },
+  subsaw: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Subsaw',
+    required: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  comments: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Comment'
+  }],
+  karma: {
+    type: Number,
+    default: 1 // auto-upvoted by author on creation
+  }
+});
 
-postSchema.plugin(mongooseUniqueValidator)
+postSchema.plugin(mongooseUniqueValidator);
 
 postSchema.set('toJSON', {
-  transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString()
-    delete returnedObject._id
-    delete returnedObject.__v
+  virtuals: true,
+  transform: (doc, ret) => {
+    ret.id = ret._id.toString();
+    delete ret._id;
+    delete ret.__v;
   }
-})
+});
 
-module.exports = mongoose.model('Post', postSchema)
-
+module.exports = mongoose.model('Post', postSchema);

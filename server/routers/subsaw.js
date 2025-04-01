@@ -3,6 +3,7 @@ const { check, param } = require('express-validator');
 const { createSubsaw, getSubsaw, joinSubsaw, leaveSub } = require('@controllers/subsaw');
 const validateRequest = require('./utils/validateRequest');
 const requireAuth = require('./utils/requireAuth');
+const postsRouter = require('@routers/posts')
 
 subsawRouter.post('/', [
   check('name')
@@ -38,5 +39,7 @@ subsawRouter.post('/:name/leave',
     .matches(/^[a-zA-Z0-9_]+$/).withMessage('Invalid subsaw name')
   ],
   requireAuth, validateRequest, leaveSub)
+
+subsawRouter.use('/:name/posts', postsRouter)
 
 module.exports = subsawRouter
