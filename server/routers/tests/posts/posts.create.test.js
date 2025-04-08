@@ -25,6 +25,7 @@ afterAll(async () => {
 });
 
 const signupAndCreateSubsaw = async () => {
+
   const signupRes = await agent.post('/api/auth/signup').send({
     username: 'posttester',
     email: 'post@test.com',
@@ -32,7 +33,7 @@ const signupAndCreateSubsaw = async () => {
   });
 
   const subsawRes = await agent.post('/api/s').send({
-    name: 'PostTestSubsaw',
+    subsawName: 'PostTestSubsaw',
     description: 'Subsaw for post testing'
   });
 
@@ -43,20 +44,20 @@ const signupAndCreateSubsaw = async () => {
 };
 
 describe('POST /api/posts', () => {
-  test.only('successfully creates a text post with valid data', async () => {
+  test('successfully creates a text post with valid data', async () => {
 
     await signupAndCreateSubsaw();
     
     const res = await agent.post('/api/s/PostTestSubsaw/posts/submit').send({
       title: 'My First Post',
       type: 'text',
-      body: 'Hello world!'
+      content: 'Hello world!'
     });
     
     expect(res.status).toBe(201);
     expect(res.body.title).toBe('My First Post');
     expect(res.body.type).toBe('text');
-    expect(res.body.body).toBe('Hello world!');
+    expect(res.body.content).toBe('Hello world!');
     expect(res.body.karma).toBe(1);
     expect(res.body.userVote).toBe('upvote');
   });
@@ -95,8 +96,7 @@ describe('POST /api/posts', () => {
     const res = await agent.post('/api/s/PostTestSubsaw/posts/submit').send({
       title: 'Bad Type',
       type: 'video',
-      body: 'Should fail',
-      subsawId: subsaw._id
+      content: 'Should fail'
     });
 
     expect(res.status).toBe(400);
@@ -104,13 +104,15 @@ describe('POST /api/posts', () => {
   });
 
   test('fails without authentication', async () => {
+
+    await signupAndCreateSubsaw();
+
     const unauth = supertest.agent(app);
 
     const res = await unauth.post('/api/s/PostTestSubsaw/posts/submit').send({
       title: 'No Auth',
       type: 'text',
-      body: 'No user',
-      subsawId: 'someid'
+      content: 'No user',
     });
 
     expect(res.status).toBe(401);
@@ -123,7 +125,7 @@ describe('POST /api/posts', () => {
     const res = await agent.post('/api/s/posts/submit').send({
       title: 'Missing Subsaw',
       type: 'text',
-      body: 'No subsawId'
+      content: 'No subsawId'
     });
 
     expect(res.status).toBe(404);
@@ -136,7 +138,7 @@ describe('POST /api/posts', () => {
     const res = await agent.post('/api/s/al/posts/submit').send({
       title: 'Ghost Subsaw',
       type: 'text',
-      body: 'This subsaw doesn’t exist',
+      content: 'This subsaw doesn’t exist',
     });
 
     expect(res.status).toBe(404);

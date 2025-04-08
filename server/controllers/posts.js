@@ -1,32 +1,20 @@
 const Post = require('@models/post')
 const Vote = require('@models/vote')
-const getAuthenticatedUser = require('./utils/getAuthenticatedUser')
-const getSubsaw = require ('./utils/getSubsaw')
 const attachUserVote = require('./utils/attachUserVote');
+const mongoose = require('mongoose')
 
 const createPost = async (req, res) => {
 
   const user = req.user
-  console.log(user);
-  
   const subsaw = req.subsaw
-  console.log(subsaw);
-  
   
   // Create new Post in the DB
   const newPostData = {
     title: req.body.title,
     type: req.body.type,
+    content: req.body.content,
     author: user._id, 
     subsaw: subsaw._id
-  } 
-  
-  if (newPostData.type === 'text') {
-    newPostData.body = req.body.body;
-  }
-
-  if (newPostData.type === 'image') {
-    newPostData.mediaUrl = req.body.mediaUrl;
   }
 
   // Save new post
@@ -52,13 +40,28 @@ const createPost = async (req, res) => {
 
 const getPost = async (req, res) => {
 
-  const user = getAuthenticatedUser(req, res)
-  console.log(user);
+  const { postId } = req.params;
+  const subsaw = req.subsaw
 
-  const post = await Post.findById(req.params.postId);
-  const postWithVote = await attachUserVote(post, req.user?._id);
-  res.json(postWithVote);
-}
+  if (!mongoose.Types.ObjectId.isValid(postId)) {
+    return res.status(400).json({ error: 'Invalid post ID' });
+  }
+
+  try {
+    const post = await Post.findOne({ _id: postId, subsaw: subsaw._id });
+
+
+    if (!post) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
+
+    const postWithVote = await attachUserVote(post, req.user?._id);
+    res.json(postWithVote);
+  } catch (error) {
+    console.error('Error fetching post:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
 
 const upvotePost = async (req, res) => {
 

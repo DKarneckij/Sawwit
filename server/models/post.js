@@ -16,13 +16,9 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  body: {
+  content: {
     type: String,
-    required: function () { return this.type === 'text'; }
-  },
-  mediaUrl: {
-    type: String,
-    required: function () { return this.type === 'image'; }
+    required: true
   },
   subsaw: {
     type: mongoose.Schema.Types.ObjectId,
