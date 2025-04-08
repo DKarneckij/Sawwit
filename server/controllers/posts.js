@@ -6,9 +6,12 @@ const attachUserVote = require('./utils/attachUserVote');
 
 const createPost = async (req, res) => {
 
-  const user = await getAuthenticatedUser(req, res)
-  const subsaw = await getSubsaw(req)
-  console.log(req.body);
+  const user = req.user
+  console.log(user);
+  
+  const subsaw = req.subsaw
+  console.log(subsaw);
+  
   
   // Create new Post in the DB
   const newPostData = {
@@ -18,9 +21,6 @@ const createPost = async (req, res) => {
     subsaw: subsaw._id
   } 
   
-  console.log(newPostData);
-  
-  
   if (newPostData.type === 'text') {
     newPostData.body = req.body.body;
   }
@@ -28,8 +28,6 @@ const createPost = async (req, res) => {
   if (newPostData.type === 'image') {
     newPostData.mediaUrl = req.body.mediaUrl;
   }
-
-  console.log(newPostData);
 
   // Save new post
   const newPost = await new Post(newPostData).save();
@@ -53,9 +51,13 @@ const createPost = async (req, res) => {
 }
 
 const getPost = async (req, res) => {
-  // const post = await Post.findById(req.params.id);
-  // const postWithVote = await attachUserVote(post, req.user?._id);
-  // res.json(postWithVote);
+
+  const user = getAuthenticatedUser(req, res)
+  console.log(user);
+
+  const post = await Post.findById(req.params.postId);
+  const postWithVote = await attachUserVote(post, req.user?._id);
+  res.json(postWithVote);
 }
 
 const upvotePost = async (req, res) => {

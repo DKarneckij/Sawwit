@@ -90,13 +90,7 @@ const logoutUser = async (req, res) => {
 }
 
 const getMe = async (req, res) => {
-  const token = req.token;
-
-  const user = await User.findById(req.token._id)
-  if (!user) {
-    return res.status(404).json({ error: 'User not found' })
-  };
-
+  const user = req.user
   res.status(200).json(user);
 };
 

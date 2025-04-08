@@ -39,12 +39,12 @@ describe('GET /api/s/:name', () => {
     const subsawName = "TestSubsaw"
     const description = "A cool place"
     
-    await agent.post('/api/s/').send({name: subsawName, description})
+    await agent.post('/api/s/').send({subsawName, description})
 
     const res = await agent.get(`/api/s/TestSubsaw`).expect(200);
 
     expect(res.body.displayName).toBe(subsawName);
-    expect(res.body.name).toBe(subsawName.toLowerCase());
+    expect(res.body.subsawName).toBe(subsawName.toLowerCase());
     expect(res.body.description).toBe('A cool place');
     expect(res.body.moderators).toBeDefined();
     expect(res.body.id).toBeDefined();
@@ -63,7 +63,7 @@ describe('GET /api/s/:name', () => {
     const description = "A cool place"
 
     await agent.post('/api/s/').send({
-      name: 'FunnyStuff',
+      subsawName: 'FunnyStuff',
       description: 'Haha yes',
     });
 

@@ -1,33 +1,17 @@
 const authRouter = require('express').Router();
 const { signupUser, loginUser, logoutUser, getMe } = require('../controllers/auth');
+const { validateSignup, validateLogin } = require('./validators/authValidator')
 
 const { check } = require('express-validator');
 const validateRequest = require('./utils/validateRequest');
 const requireAuth = require('./utils/requireAuth')
 
-authRouter.post('/signup',
-  [
-    check('username')
-      .isLength({ min: 3, max: 20 })
-      .withMessage('Username must be between 3 and 20 characters')
-      .matches(/^[a-zA-Z0-9_]+$/)
-      .withMessage('Username can only contain letters, numbers, and underscores'),
+authRouter.post('/signup', validateSignup, validateRequest, signupUser);
 
-    check('email')
-      .isEmail()
-      .withMessage('Invalid email format'),
+authRouter.post('/login', validateLogin, validateRequest, loginUser);
 
-    check('password')
-      .isLength({ min: 8, max: 24 })
-      .withMessage('Password must be between 8 and 24 characters'),
-       
-  ], validateRequest, signupUser
-);
+authRouter.post('/logout', logoutUser);
 
-authRouter.post('/login', loginUser)
-
-authRouter.post('/logout', logoutUser)
-
-authRouter.get('/me', requireAuth, getMe)
+authRouter.get('/me', requireAuth, getMe);
 
 module.exports = authRouter

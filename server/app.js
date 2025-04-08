@@ -18,7 +18,7 @@ app.use(cookieParser())
 
 // Routes
 app.use('/api/auth', authRouter);
-app.use('/api/s', subsawRouter)
+app.use('/api/s', subsawRouter);
 
 // Fallback + Error Handling
 app.use(middleware.unknownEndpoint);

@@ -3,27 +3,19 @@ const User = require('@models/user');
 
 const createSubsaw = async (req, res) => {
 
-  const userId = req.token._id
-
-  // Find the user
-  const user = await User.findById(userId)
-  if (!user) {
-    return res.status(404).json({ error: 'User not found' });
-  }
-
-  // Get displayName (typed by user) from input — will be used both for storage & lookup
-  const { name } = req.body;
+  const user = req.user
+  const subsawDisplayName = req.body.subsawName
 
   // Check if subsaw name (normalized lowercase) already exists
-  const existing = await Subsaw.findOne({ name: name.toLowerCase() });
+  const existing = await Subsaw.findOne({ subsawName: subsawDisplayName.toLowerCase() });
   if (existing) {
     return res.status(409).json({ error: 'Subsaw name already exists' });
   }
 
   // Create new subsaw and add creator as mod and subscriber
   const newSubsaw = new Subsaw({
-    displayName: name,
-    name: name.toLowerCase(),
+    displayName: subsawDisplayName,
+    subsawName: subsawDisplayName.toLowerCase(),
     description: req.body.description || '',
     moderators: [user._id],
     subscribers: [user._id],
@@ -39,33 +31,17 @@ const createSubsaw = async (req, res) => {
 }
 
 const getSubsaw = async (req, res) => {  
-
-  const name = req.params.name?.trim().toLowerCase();
-
-  const subsaw = await Subsaw.findOne({ name: name.toLowerCase() });
-
-  if (!subsaw) {
-      return res.status(404).json({ error: 'Subsaw not found' });
-  }
-
+  const subsaw = req.subsaw
   res.status(200).json(subsaw);
 };
 
 const joinSubsaw = async (req, res) => {
 
   // Find the user
-  const userId = req.token._id
-  const user = await User.findById(userId)
-  if (!user) {
-    return res.status(404).json({ error: 'User not found' });
-  }  
+  const user = req.user 
   
   // Find the subsaw
-  const name = req.params.name.toLowerCase()  
-  const subsaw = await Subsaw.findOne({ name });
-  if (!subsaw) {
-    return res.status(404).json({ error: 'Subsaw not found' });
-  }
+  const subsaw = req.subsaw
   
   // Check if user is already subscribed
   const alreadyJoined = user.subsawsJoined.some(id => id.equals(subsaw._id));
@@ -93,20 +69,8 @@ const joinSubsaw = async (req, res) => {
 
 const leaveSub = async (req, res) => {
   
-  const name = req.params.name.toLowerCase();
-  const token = req.token;
-
-  // Fetch the full user document from DB
-  const user = await User.findById(token._id);
-  if (!user) {
-    return res.status(404).json({ error: 'User not found' });
-  }
-  
-  // Find the subsaw
-  const subsaw = await Subsaw.findOne({ name });
-  if (!subsaw) {
-    return res.status(404).json({ error: 'Subsaw not found' });
-  }
+  const user = req.user
+  const subsaw = req.subsaw
 
   // See if user is joined
   const isJoined = user.subsawsJoined.some( _id => _id.equals(subsaw._id));

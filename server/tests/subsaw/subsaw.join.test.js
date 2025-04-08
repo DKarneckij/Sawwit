@@ -24,7 +24,7 @@ beforeEach(async () => {
   });
 
   await agent.post('/api/s').send({
-    name: 'TestSubsaw',
+    subsawName: 'TestSubsaw',
     description: 'Description'
   });
 });
@@ -106,9 +106,9 @@ describe('POST /api/s/:name/join', () => {
       password: 'SubsawTest123'
     });
   
-    const res = await agent.post('/api/s/testing!/join').expect(400)
+    const res = await agent.post('/api/s/testing!/join').expect(404)
     expect(res.body.error).toBeDefined();
-    expect(res.body.error).toMatch("Invalid subsaw name");
+    expect(res.body.error).toMatch("Subsaw not found");
   });
   
   

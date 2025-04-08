@@ -1,45 +1,19 @@
 const subsawRouter = require('express').Router();
-const { check, param } = require('express-validator');
 const { createSubsaw, getSubsaw, joinSubsaw, leaveSub } = require('@controllers/subsaw');
 const validateRequest = require('./utils/validateRequest');
+const validateSubsaw = require('./utils/validateSubsaw')
 const requireAuth = require('./utils/requireAuth');
+const { validateCreateSubsaw } = require('./validators/subsawValidator')
 const postsRouter = require('@routers/posts')
 
-subsawRouter.post('/', [
-  check('name')
-  .isLength({min: 3, max: 20}).withMessage("Subsaw name must be between 3 and 20 characters")
-], requireAuth, validateRequest, createSubsaw
-)
+subsawRouter.post('/', validateCreateSubsaw, validateRequest, requireAuth, createSubsaw)
 
-subsawRouter.get('/:name', 
-  [
-    param('name')
-    .trim()
-    .isLength({ min: 3, max: 21 }).withMessage('Name must be between 3 and 21 characters')
-    .matches(/^[a-zA-Z0-9_]+$/).withMessage('Invalid subsaw name')
-  ],
-  validateRequest, getSubsaw
-)
+subsawRouter.get('/:subsawName', validateSubsaw, getSubsaw)
 
-subsawRouter.post('/:name/join', 
-  [
-    param('name')
-    .trim()
-    .isLength({ min: 3, max: 21 }).withMessage('Name must be between 3 and 21 characters')
-    .matches(/^[a-zA-Z0-9_]+$/).withMessage('Invalid subsaw name')
-  ],
-  requireAuth, validateRequest, joinSubsaw
-)
+subsawRouter.post('/:subsawName/join', validateSubsaw, requireAuth, joinSubsaw)
 
-subsawRouter.post('/:name/leave', 
-  [
-    param('name')
-    .trim()
-    .isLength({ min: 3, max: 21 }).withMessage('Invalid subsaw Name')
-    .matches(/^[a-zA-Z0-9_]+$/).withMessage('Invalid subsaw name')
-  ],
-  requireAuth, validateRequest, leaveSub)
+subsawRouter.post('/:subsawName/leave', validateSubsaw, requireAuth, leaveSub)
 
-subsawRouter.use('/:name/posts', postsRouter)
+subsawRouter.use('/:subsawName/posts', validateSubsaw, postsRouter)
 
 module.exports = subsawRouter

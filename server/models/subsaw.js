@@ -6,7 +6,7 @@ const subsawSchema = new mongoose.Schema({
         type: String,
         required: true
     },  
-    name: {
+    subsawName: {
         type: String,
         required: true
     },

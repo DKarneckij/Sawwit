@@ -24,7 +24,7 @@ beforeEach(async () => {
   });
 
   await agent.post('/api/s').send({
-    name: 'TestSubsaw',
+    subsawName: 'TestSubsaw',
     description: 'Description'
   });
 });
@@ -52,7 +52,7 @@ describe('POST /api/s/:name/leave', () => {
     expect(leaveRes.body.message).toBe('Left subsaw successfully');
 
     const me = await agent.get('/api/auth/me');
-    expect(me.body.subsawsJoined).not.toContainEqual(expect.objectContaining({ name: 'testsubsaw' }));
+    expect(me.body.subsawsJoined).not.toContainEqual(expect.objectContaining({ subsawName: 'testsubsaw' }));
   });
 
   test('User is not subscribed to the subsaw', async () => {
@@ -99,7 +99,7 @@ describe('POST /api/s/:name/leave', () => {
       password: 'SubsawTest123'
     });
 
-    const res = await agent.post('/api/s/!!!/leave').expect(400);
-    expect(res.body.error || res.body.errors[0].msg).toMatch(/invalid/i);
+    const res = await agent.post('/api/s/!!!/leave').expect(404);
+    expect(res.body.error || res.body.errors[0].msg).toMatch("Subsaw not found");
   });
 });

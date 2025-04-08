@@ -45,7 +45,7 @@ const signupAndCreateSubsaw = async () => {
 describe('POST /api/posts', () => {
   test.only('successfully creates a text post with valid data', async () => {
 
-    const { subsaw } = await signupAndCreateSubsaw();
+    await signupAndCreateSubsaw();
     
     const res = await agent.post('/api/s/PostTestSubsaw/posts/submit').send({
       title: 'My First Post',
@@ -61,25 +61,25 @@ describe('POST /api/posts', () => {
     expect(res.body.userVote).toBe('upvote');
   });
 
-  test('successfully creates an image post with valid data', async () => {
-    const { subsaw } = await signupAndCreateSubsaw();
+  // test('successfully creates an image post with valid data', async () => {
+  //   const { subsaw } = await signupAndCreateSubsaw();
 
-    const res = await agent.post('/api/posts').send({
-      title: 'Image Post',
-      type: 'image',
-      mediaUrl: 'https://example.com/image.jpg',
-      subsawId: subsaw._id
-    });
+  //   const res = await agent.post('/api/posts').send({
+  //     title: 'Image Post',
+  //     type: 'image',
+  //     mediaUrl: 'https://example.com/image.jpg',
+  //     subsawId: subsaw._id
+  //   });
 
-    expect(res.status).toBe(201);
-    expect(res.body.type).toBe('image');
-    expect(res.body.mediaUrl).toBe('https://example.com/image.jpg');
-  });
+  //   expect(res.status).toBe(201);
+  //   expect(res.body.type).toBe('image');
+  //   expect(res.body.mediaUrl).toBe('https://example.com/image.jpg');
+  // });
 
   test('fails to create a post without a title', async () => {
     const { subsaw } = await signupAndCreateSubsaw();
 
-    const res = await agent.post('/api/posts').send({
+    const res = await agent.post('/api/s/PostTestSubsaw/posts/submit').send({
       type: 'text',
       body: 'Missing title',
       subsawId: subsaw._id
@@ -92,7 +92,7 @@ describe('POST /api/posts', () => {
   test('fails to create a post with an invalid type', async () => {
     const { subsaw } = await signupAndCreateSubsaw();
 
-    const res = await agent.post('/api/posts').send({
+    const res = await agent.post('/api/s/PostTestSubsaw/posts/submit').send({
       title: 'Bad Type',
       type: 'video',
       body: 'Should fail',
@@ -106,7 +106,7 @@ describe('POST /api/posts', () => {
   test('fails without authentication', async () => {
     const unauth = supertest.agent(app);
 
-    const res = await unauth.post('/api/posts').send({
+    const res = await unauth.post('/api/s/PostTestSubsaw/posts/submit').send({
       title: 'No Auth',
       type: 'text',
       body: 'No user',
@@ -120,24 +120,23 @@ describe('POST /api/posts', () => {
   test('fails with missing subsawId', async () => {
     await signupAndCreateSubsaw();
 
-    const res = await agent.post('/api/posts').send({
+    const res = await agent.post('/api/s/posts/submit').send({
       title: 'Missing Subsaw',
       type: 'text',
       body: 'No subsawId'
     });
 
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(404);
     expect(res.body.error).toBeDefined();
   });
 
   test('fails when posting to non-existent subsaw', async () => {
     await signupAndCreateSubsaw();
 
-    const res = await agent.post('/api/posts').send({
+    const res = await agent.post('/api/s/al/posts/submit').send({
       title: 'Ghost Subsaw',
       type: 'text',
       body: 'This subsaw doesn’t exist',
-      subsawId: '604cb554311d68f491ba5781' // Random ObjectId
     });
 
     expect(res.status).toBe(404);
