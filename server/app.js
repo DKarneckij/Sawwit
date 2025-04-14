@@ -16,6 +16,7 @@ app.use(cors());
 app.use(express.static('build'));
 app.use(express.json());
 app.use(cookieParser());
+app.use(middleware.requestLogger)
 
 // Routes
 app.use('/api/auth', authRouter);

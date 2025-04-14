@@ -13,9 +13,9 @@ const connectDB = async () => {
       const { MongoMemoryServer } = require('mongodb-memory-server');
       mongoServer = await MongoMemoryServer.create();
       uri = mongoServer.getUri();
-      logger.info('Using in-memory MongoDB');
+      console.log('\n Using in-memory MongoDB \n');
     } else {
-      logger.info(`Connecting to MongoDB at ${uri}`);
+      console.log(`\n Connecting to MongoDB at ${uri} \n`);
     }
 
     // Connect to server

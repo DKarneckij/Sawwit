@@ -10,9 +10,9 @@ const requestLogger = (req, res, next) => {
       console.log('🔍 Query:', req.query);
     }
   
-    if (req.headers) {
-      console.log('📦 Headers:', req.headers);
-    }
+    // if (req.headers) {
+    //   console.log('📦 Headers:', req.headers);
+    // }
   
     if (req.cookies) {
       console.log('🍪 Cookies:', req.cookies);
