@@ -2,7 +2,7 @@ const supertest = require('supertest');
 const app = require('@app');
 const Subsaw = require('@models/subsaw');
 const User = require('@models/user');
-const { connectDB, disconnectDB } = require('../../utils/mongo');
+const { connectDB, disconnectDB } = require('@utils/mongo');
 
 const api = supertest(app)
 

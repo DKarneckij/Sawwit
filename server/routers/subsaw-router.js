@@ -1,10 +1,10 @@
 const subsawRouter = require('express').Router();
-const { createSubsaw, getSubsaw, joinSubsaw, leaveSub } = require('@controllers/subsaw');
-const validateRequest = require('./utils/validateRequest');
-const validateSubsaw = require('./utils/validateSubsaw')
-const requireAuth = require('./utils/requireAuth');
-const { validateCreateSubsaw } = require('./validators/subsawValidator')
-const postsRouter = require('@routers/posts')
+const { createSubsaw, getSubsaw, joinSubsaw, leaveSub } = require('@controllers/subsaw-controller');
+const validateRequest = require('@routers/utils/validateRequest');
+const validateSubsaw = require('@routers/utils/validateSubsaw')
+const requireAuth = require('@routers/utils/requireAuth');
+const { validateCreateSubsaw } = require('@routers/validators/subsawValidator')
+const postsRouter = require('@routers/posts-router')
 
 subsawRouter.post('/', validateCreateSubsaw, validateRequest, requireAuth, createSubsaw)
 

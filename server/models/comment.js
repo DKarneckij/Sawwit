@@ -1,47 +1,32 @@
-const mongoose = require('mongoose')
-const mongooseUniqueValidator = require('mongoose-unique-validator')
+const mongoose = require('mongoose');
 
 const commentSchema = new mongoose.Schema({
-    content: {
-      type: String,
-      required: true,
-      trim: true
-    },
-    author: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true
-    },
-    parentPost: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Post',
-      required: true
-    },
-    parentComment: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Comment',
-      default: null
-    },
-    replies: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Comment'
-    }],
-    upvotedBy: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    }],
-    downvotedBy: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    }],
-    deleted: {
-      type: Boolean,
-      default: false
-    },
-    timeStamp: {
-      type: Date,
-      default: Date.now
-    }
-  });
+  content: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
 
-module.exports = mongoose.model('Comment', commentModel)
+  commentableType: {
+    type: String,
+    enum: ['Post', 'Comment'],  // <-- either a Post or another Comment
+    required: true
+  },
+  commentableId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    refPath: 'commentableType' // <-- dynamic reference
+  },
+
+  karma: {
+    type: Number,
+    default: 1 // auto-upvoted by author on creation
+  }
+}, { timestamps: true }); // createdAt and updatedAt automatically
+
+module.exports = mongoose.model('Comment', commentSchema);

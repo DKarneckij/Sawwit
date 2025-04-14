@@ -4,8 +4,8 @@ const cookieParser = require('cookie-parser');
 // require('express-async-errors');
 
 const middleware = require('./utils/middleware');
-const authRouter = require('@routers/auth');
-const subsawRouter = require('@routers/subsaw');
+const authRouter = require('@routers/auth-router');
+const subsawRouter = require('@routers/subsaw-router');
 
 const app = express();
 

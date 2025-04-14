@@ -1,10 +1,10 @@
 const supertest = require('supertest');
-const app = require('../../../app');
+const app = require('@app');
 const mongoose = require('mongoose');
-const { connectDB, disconnectDB } = require('../../../utils/mongo');
-const Post = require('../../../models/post');
-const Subsaw = require('../../../models/subsaw');
-const User = require('../../../models/user');
+const { connectDB, disconnectDB } = require('@utils/mongo');
+const Post = require('@models/post');
+const Subsaw = require('@models/subsaw');
+const User = require('@models/user');
 
 const api = supertest(app);
 
@@ -69,6 +69,7 @@ describe('GET /api/s/:name/posts/:postId', () => {
 
   test('returns a specific post by id from the subsaw', async () => {
     const post = createdPosts[0];
+    
     const res = await api.get(`/api/s/testsubsaw/posts/${post.id}`).expect(200);
     expect(res.body.title).toBe(post.title);
   });
