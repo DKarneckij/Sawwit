@@ -1,19 +1,24 @@
 const subsawRouter = require('express').Router();
+
+// Routers
+const postsRouter = require('@routers/posts-router');
+
+// Controllers
 const { createSubsaw, getSubsaw, joinSubsaw, leaveSub } = require('@controllers/subsaw-controller');
-const validateRequest = require('@routers/utils/validateRequest');
-const validateSubsaw = require('@routers/utils/validateSubsaw')
+
+// Middlewares
 const requireAuth = require('@routers/utils/requireAuth');
-const { validateCreateSubsaw } = require('@routers/validators/subsawValidator')
-const postsRouter = require('@routers/posts-router')
+const validateRequest = require('@routers/utils/validateRequest');
+const validateSubsaw = require('@routers/utils/validateSubsaw');
 
-subsawRouter.post('/', validateCreateSubsaw, validateRequest, requireAuth, createSubsaw)
+// Validators
+const { validateCreateSubsaw } = require('@routers/validators/subsawValidator');
 
-subsawRouter.get('/:subsawName', validateSubsaw, getSubsaw)
+// Routes
+subsawRouter.post('/', validateCreateSubsaw, validateRequest, requireAuth, createSubsaw);
+subsawRouter.get('/:subsawName', validateSubsaw, getSubsaw);
+subsawRouter.post('/:subsawName/join', validateSubsaw, requireAuth, joinSubsaw);
+subsawRouter.post('/:subsawName/leave', validateSubsaw, requireAuth, leaveSub);
+subsawRouter.use('/:subsawName/posts', validateSubsaw, postsRouter);
 
-subsawRouter.post('/:subsawName/join', validateSubsaw, requireAuth, joinSubsaw)
-
-subsawRouter.post('/:subsawName/leave', validateSubsaw, requireAuth, leaveSub)
-
-subsawRouter.use('/:subsawName/posts', validateSubsaw, postsRouter)
-
-module.exports = subsawRouter
+module.exports = subsawRouter;

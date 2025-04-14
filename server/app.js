@@ -1,9 +1,11 @@
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-// require('express-async-errors');
 
+// Utils / Middleware
 const middleware = require('./utils/middleware');
+
+// Routers
 const authRouter = require('@routers/auth-router');
 const subsawRouter = require('@routers/subsaw-router');
 
@@ -13,8 +15,7 @@ const app = express();
 app.use(cors());
 app.use(express.static('build'));
 app.use(express.json());
-app.use(cookieParser())
-// app.use(middleware.requestLogger);
+app.use(cookieParser());
 
 // Routes
 app.use('/api/auth', authRouter);
