@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@plugin "flowbite-react/plugin/tailwindcss";
+@source "../.flowbite-react/class-list.json";
 
 
 @theme {
@@ -11,6 +13,7 @@
   --color-search-text: #878a8c;
   --color-karma: #a8aaab;
   --color-sawwit-blue: #318CE7;
+  --color-sawwit-blue-dark: #2770b8;
   --color-sawwit-orange: #FF5700;
   --color-profile-dropdown-gray: #787c7e;
   --color-component-border: #d2d2d2;
