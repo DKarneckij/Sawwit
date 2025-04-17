@@ -6,7 +6,7 @@ const HomeLogo = () => {
       <img
         src="https://res.cloudinary.com/dperxfai0/image/upload/v1718229394/assets/logo-graphic.svg"
         alt="Graphic"
-        className="h-[26px] pr-2"
+        className="h-[24px] pr-2"
         loading="lazy"
       />
       <img

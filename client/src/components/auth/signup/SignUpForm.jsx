@@ -1,37 +1,59 @@
-import { useState } from 'react';
-import SignUpOne from '@auth/signup/SignUpOne';
-import SignUpTwo from '@auth/signup/SignUpTwo';
+import { useState, useEffect } from 'react';
+import SignUpOne from './SignUpOne';
+import SignUpTwo from './SignUpTwo';
+import { signup } from '@services/authService'; // your new API wrapper
+import { useAuth } from '@contexts/authContext'; // for login()
 
-const SignUpForm = ({ setShowLogin, onClose }) => {
+const SignUpForm = ({ setShowLogin, onClose, setGlobalOnBack }) => {
   const [stepOne, setStepOne] = useState(true);
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [formError, setFormError] = useState('');
+  const { login } = useAuth();
 
-  return (
-    <>
-      {stepOne ? (
-        <SignUpOne
-          email={email}
-          setEmail={setEmail}
-          onNext={() => setStepOne(false)}
-          setShowLogin={setShowLogin}
-        />
-      ) : (
-        <SignUpTwo
-          username={username}
-          setUsername={setUsername}
-          password={password}
-          setPassword={setPassword}
-          onBack={() => setStepOne(true)}
-          onSubmit={() => {
-            console.log({ email, username, password }); // placeholder signup
-            onClose();
-          }}
-          setShowLogin={setShowLogin}
-        />
-      )}
-    </>
+  useEffect(() => {
+  if (!setGlobalOnBack) return;
+
+  if (stepOne) {
+    setGlobalOnBack(null);
+  } else {
+    setGlobalOnBack(() => () => setStepOne(true));
+  }
+}, [stepOne, setGlobalOnBack]);
+
+  const onSubmit = async (e) => {
+    e.preventDefault(); // to support Enter key
+    try {
+      setFormError('');
+      const user = await signup({ email, username, password });
+      login(user);
+      onClose();
+    } catch (err) {
+      setFormError(err.message);
+    }
+  };
+  return stepOne ? (
+    <SignUpOne
+      email={email}
+      setEmail={setEmail}
+      onNext={() => {
+        setFormError('');
+        setStepOne(false);
+      }}
+      setShowLogin={setShowLogin}
+    />
+  ) : (
+    <SignUpTwo
+      username={username}
+      setUsername={setUsername}
+      password={password}
+      setPassword={setPassword}
+      onSubmit={onSubmit}
+      onBack={() => setStepOne(true)}
+      setShowLogin={setShowLogin}
+      formError={formError} // pass it down
+    />
   );
 };
 

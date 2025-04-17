@@ -1,8 +1,8 @@
-import HomeLogo from './HomeLogo';
-import SearchBar from './SearchBar';
-import LoginTrigger from './LoginTrigger';
+import HomeLogo from '@layout/Navbar/HomeLogo';
+import SearchBar from '@layout/Navbar/SearchBar';
+import IconsAndUser from './IconsAndUser';
 
-const NavbarLoggedOut = () => {
+const NavbarLoggedIn = () => {
   return (
     <nav className="h-14 py-2 px-3 flex items-center sticky top-0">
       <div className='shrink-0'>
@@ -14,12 +14,12 @@ const NavbarLoggedOut = () => {
           <SearchBar />
         </div>
       </div>
+
+      <IconsAndUser />
       
-      <div className='pr-10 max-[1200px]:pr-4 max-[1050px]:pr-0'>
-        <LoginTrigger />
-      </div>
+
     </nav>
   );
 };
 
-export default NavbarLoggedOut;
+export default NavbarLoggedIn;

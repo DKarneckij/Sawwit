@@ -1,37 +1,32 @@
 import { Button, TextInput } from 'flowbite-react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 const SignUpTwo = ({
   username,
   setUsername,
   password,
   setPassword,
-  onBack,
   onSubmit,
   setShowLogin,
+  formError, // ✅ receive from parent
 }) => {
   return (
-    <>
+    <form onSubmit={onSubmit}>
       <div className="space-y-6 px-6 py-4">
-      <button
-        onClick={onBack}
-        className="flex items-center justify-center w-9 h-9 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition"
-        aria-label="Go back"
-      >
-        <FontAwesomeIcon icon={faArrowLeft} className="text-gray-700 dark:text-gray-300" />
-      </button>
-
         <h1 className="text-[22px] font-bold text-center text-gray-900 dark:text-white">
           Choose a username and password
         </h1>
+
+        {/* ✅ Error message */}
+        {formError && (
+          <p className="text-sm text-red-500 text-center -mt-2">{formError}</p>
+        )}
 
         <TextInput
           id="username"
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          type="username"
+          type="text"
           required
         />
 
@@ -58,13 +53,13 @@ const SignUpTwo = ({
 
       <div className="flex justify-center pb-4">
         <Button
-          onClick={onSubmit}
+          type="submit"
           className="bg-sawwit-blue hover:bg-sawwit-blue-dark rounded-full w-[250px] font-bold"
         >
           Sign Up
         </Button>
       </div>
-    </>
+    </form>
   );
 };
 

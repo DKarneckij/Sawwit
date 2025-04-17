@@ -1,22 +1,36 @@
 import { useState } from 'react';
 import { Button, TextInput } from 'flowbite-react';
+import { login as loginService } from '@services/authService'; // assuming named export
+import { useAuth } from '@contexts/authContext';
 
 const LoginForm = ({ setShowLogin, onClose }) => {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
+  const [formError, setFormError] = useState('');
+  const { setUser } = useAuth(); // or use login() if you created a wrapper
 
-  const handleLogin = () => {
-    console.log('Attempting login with:', { identifier, password });
-    // Placeholder: simulate login success
-    onClose();
+  const handleLogin = async (e) => {
+    e.preventDefault(); // to support Enter key
+    try {
+      setFormError('');
+      const user = await loginService({ identifier, password });
+      setUser(user); // this updates context and triggers UI changes
+      onClose();     // close modal
+    } catch (err) {
+      setFormError(err.message); // show backend error (e.g. "Invalid password")
+    }
   };
 
   return (
-    <>
+    <form onSubmit={handleLogin}>
       <div className="space-y-6 px-6 py-4">
         <h1 className="text-center text-[25px] font-bold text-gray-900 dark:text-white">
           Log In
         </h1>
+
+        {formError && (
+          <p className="text-sm text-red-500 text-center -mt-2">{formError}</p>
+        )}
 
         <TextInput
           id="identifier"
@@ -59,12 +73,13 @@ const LoginForm = ({ setShowLogin, onClose }) => {
 
       <div className="flex justify-center pb-4">
         <Button
-          onClick={handleLogin}
-          className="bg-sawwit-blue hover:bg-sawwit-blue-dark rounded-full w-[250px] font-bold">
+          type="submit"
+          className="bg-sawwit-blue hover:bg-sawwit-blue-dark rounded-full w-[250px] font-bold"
+        >
           Log In
         </Button>
       </div>
-    </>
+    </form>
   );
 };
 

@@ -3,10 +3,22 @@ const User = require('../models/user');
 const generateToken = require('./utils/generateToken');
 
 const signupUser = async (req, res) => {
+
   const { username, email, password } = req.body;  
-  
+
   if (!username || !email || !password) {
     return res.status(400).json({ error: 'All fields are required' });
+  }
+
+  const emailExists = await User.findOne({ email });
+  if (emailExists) {
+    return res.status(409).json({ message: 'Email is already in use.' });
+  }
+
+  const temp = username.toLowerCase()
+  const usernameExists = await User.findOne({ username:temp });
+  if (usernameExists) {
+    return res.status(409).json({ message: 'Username is already taken.' });
   }
 
   const saltRounds = 10;
@@ -14,8 +26,8 @@ const signupUser = async (req, res) => {
 
   const user = new User({
     email,
-    displayName: username.toLowerCase(),
-    username,
+    displayName: username,
+    username: username.toLowerCase(),
     passwordHash,
   });
 
@@ -49,7 +61,7 @@ const loginUser = async (req, res) => {
   }
 
   const user = await User.findOne({
-    $or:[{username: identifier}, {email: identifier}]
+    $or:[{username: identifier.toLowerCase()}, {email: identifier}]
   })
 
   const passwordCorrect = user === null
@@ -69,13 +81,7 @@ const loginUser = async (req, res) => {
       sameSite: 'Strict'
     })
     .status(200)
-    .json({
-      id: user._id.toString(),
-      username: user.username,
-      email: user.email,
-      profilePicture: user.profilePicture,
-      karma: user.karma
-    });
+    .json(user);
 }
 
 const logoutUser = async (req, res) => {
