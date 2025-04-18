@@ -14,9 +14,11 @@
   --color-karma: #a8aaab;
   --color-sawwit-blue: #318CE7;
   --color-sawwit-blue-dark: #2770b8;
-  --color-sawwit-orange: #FF5700;
+  --color-sawwit-secondary: #FF5700;
+  --color-sawwit-secondary-hover: #FF6227;
   --color-profile-dropdown-gray: #787c7e;
   --color-component-border: #d2d2d2;
   --color-nocommunities: #e5e9ed;
   --color-nocommunities-border: #d6d9dd;
+  --color-home: #9fa1a3;
 }

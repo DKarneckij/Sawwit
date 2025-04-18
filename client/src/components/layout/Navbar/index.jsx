@@ -1,4 +1,4 @@
-import NavbarLoggedOut from '@layout/navbar/NavbarLoggedOut';
+import NavbarLoggedOut from '@components/layout/Navbar/NavbarLoggedOut';
 import NavbarLoggedIn from '@layout/navbar/NavbarLoggedIn';
 import { useAuth } from '@contexts/authContext';
 

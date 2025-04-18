@@ -40,7 +40,7 @@ const UserDropdown = () => {
       className="w-[280px] font-semibold"
     >
       {/* My Profile Section */}
-      <DropdownHeader className="flex items-center text-profile_dropdown_gray">
+      <DropdownHeader className="flex items-center text-profile-dropdown-gray">
         <FontAwesomeIcon icon={faUser} className="text-md pr-2 ml-1" />
         <span className="text-md block">My Profile</span>
       </DropdownHeader>
@@ -52,7 +52,7 @@ const UserDropdown = () => {
       </DropdownItem>
 
       {/* View Options Section */}
-      <DropdownHeader className="flex items-center text-profile_dropdown_gray">
+      <DropdownHeader className="flex items-center text-profile-dropdown-gray">
         <FontAwesomeIcon icon={faEye} className="text-md pr-1 ml-1" />
         <span className="text-md block">View Options</span>
       </DropdownHeader>

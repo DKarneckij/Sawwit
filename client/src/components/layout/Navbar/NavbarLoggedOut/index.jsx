@@ -1,5 +1,5 @@
-import HomeLogo from './HomeLogo';
-import SearchBar from './SearchBar';
+import HomeLogo from '../HomeLogo';
+import SearchBar from '../SearchBar';
 import LoginTrigger from './LoginTrigger';
 
 const NavbarLoggedOut = () => {

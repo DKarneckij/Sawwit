@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import ModalWrapper from '@auth/modal/ModalWrapper';
+import ModalWrapper from '@components/modals/ModalWrapper';
 import LoginForm from '@auth/LoginForm';
 import SignUpForm from '@auth/signup/SignUpForm';
 
