@@ -29,7 +29,7 @@ const subsawSchema = new mongoose.Schema({
     }],
     subcriberCount: {
         type: Number,
-        default: 0
+        default: 1
     },
     posts: [{
         type: mongoose.Schema.Types.ObjectId,

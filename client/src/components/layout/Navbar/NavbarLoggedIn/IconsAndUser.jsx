@@ -3,11 +3,12 @@ import IconButton from './IconButton';
 import UserDropdown from './User/UserDropdown';
 
 import {
-  faFireFlameCurved,
-  faComment,
-  faBell,
-  faPlus,
+  faFireFlameCurved, faPlus,
 } from '@fortawesome/free-solid-svg-icons';
+
+import {
+  faBell, faComment
+} from '@fortawesome/free-regular-svg-icons';
 
 const IconsAndUser = () => {
   return (

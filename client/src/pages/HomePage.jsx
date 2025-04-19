@@ -1,5 +1,5 @@
-import CreatePostBar from '@components/home/CreatePostBar';
-import PostsToolbar from '@components/home/PostsToolbar';
+import CreatePostBar from '@components/post/CreatePostBar';
+import PostsToolbar from '@components/post/PostsToolbar';
 import NoCommunities from '@components/home/NoCommunities';
 import HomeBox from '@components/sidebar/HomeBox'
 import ToS from '@components/sidebar/ToS';

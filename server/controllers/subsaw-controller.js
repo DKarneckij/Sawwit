@@ -4,28 +4,30 @@ const User = require('@models/user');
 const createSubsaw = async (req, res) => {
 
   const user = req.user
-  const subsawDisplayName = req.body.subsawName
+  const subsawName = req.body.subsawName  
 
   // Check if subsaw name (normalized lowercase) already exists
-  const existing = await Subsaw.findOne({ subsawName: subsawDisplayName.toLowerCase() });
+  const existing = await Subsaw.findOne({ subsawName: subsawName.toLowerCase() });
   if (existing) {
     return res.status(409).json({ error: 'Subsaw name already exists' });
   }
 
   // Create new subsaw and add creator as mod and subscriber
   const newSubsaw = new Subsaw({
-    displayName: subsawDisplayName,
-    subsawName: subsawDisplayName.toLowerCase(),
+    displayName: subsawName,
+    subsawName: subsawName.toLowerCase(),
     description: req.body.description || '',
     moderators: [user._id],
     subscribers: [user._id],
-    subscriberCount: 1
   });
   const savedSubsaw = await newSubsaw.save();
 
   // Add subsaw to user's list of joined subsaws
   user.subsawsJoined.push(savedSubsaw._id);
   await user.save();
+
+  newSubsaw.subscribers.push(user._id);
+  await 
   
   res.status(201).json(savedSubsaw);
 }

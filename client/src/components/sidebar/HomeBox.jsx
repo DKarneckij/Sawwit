@@ -1,4 +1,4 @@
-import CreateCommunityButton from './CreateCommunityButton';
+import CreateCommunityTrigger from '@components/sidebar/CreateCommunityTrigger'
 
 const HomeBox = () => {
 
@@ -46,7 +46,7 @@ const HomeBox = () => {
         </button>
 
         <div className="flex justify-center mt-2">
-          <CreateCommunityButton />
+          <CreateCommunityTrigger />
         </div>
       </div>
     </div>
