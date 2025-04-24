@@ -4,7 +4,7 @@ import LoginTrigger from './LoginTrigger';
 
 const NavbarLoggedOut = () => {
   return (
-    <nav className="h-14 py-2 px-3 flex items-center sticky top-0">
+    <nav className="h-14 py-2 px-3 flex items-center sticky top-0 bg-white">
       <div className='shrink-0'>
         <HomeLogo />
       </div>

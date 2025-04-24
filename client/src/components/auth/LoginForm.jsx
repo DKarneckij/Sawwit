@@ -64,7 +64,7 @@ const LoginForm = ({ setShowLogin, onClose }) => {
           <button
             type="button"
             onClick={() => setShowLogin(false)}
-            className="text-cyan-700 hover:underline dark:text-cyan-500"
+            className="cursor-pointer text-cyan-700 hover:underline dark:text-cyan-500"
           >
             Sign Up
           </button>
@@ -74,7 +74,7 @@ const LoginForm = ({ setShowLogin, onClose }) => {
       <div className="flex justify-center pb-4">
         <Button
           type="submit"
-          className="bg-sawwit-blue hover:bg-sawwit-blue-dark rounded-full w-[250px] font-bold"
+          className="cursor-pointer bg-sawwit-blue hover:bg-sawwit-blue-dark rounded-full w-[250px] font-bold"
         >
           Log In
         </Button>

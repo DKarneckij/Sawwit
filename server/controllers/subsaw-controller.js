@@ -27,15 +27,38 @@ const createSubsaw = async (req, res) => {
   await user.save();
 
   newSubsaw.subscribers.push(user._id);
-  await 
+  await newSubsaw.save();
   
   res.status(201).json(savedSubsaw);
 }
 
-const getSubsaw = async (req, res) => {  
-  const subsaw = req.subsaw
-  res.status(200).json(subsaw);
+const getSubsaw = async (req, res) => {
+  const subsaw = req.subsaw;
+  const user = req.user;
+
+  const isSubscribed = user
+    ? subsaw.subscribers.some(sub => sub.equals(user._id))
+    : false;
+
+  const isModerator = user
+    ? subsaw.moderators.some(mod => mod.equals(user._id))
+    : false;
+  
+  res.status(200).json({
+    id: subsaw._id.toString(),
+    subsawName: subsaw.subsawName,
+    displayName: subsaw.displayName,
+    description: subsaw.description,
+    date_created: subsaw.date_created,
+    subscriberCount: subsaw.subscriberCount,
+    bannerUrl: subsaw.bannerUrl,
+    backgroundUrl: subsaw.backgroundUrl,
+    pfpUrl: subsaw.pfpUrl,
+    isSubscribed,
+    isModerator
+  });
 };
+
 
 const joinSubsaw = async (req, res) => {
 
@@ -92,9 +115,37 @@ const leaveSub = async (req, res) => {
   return res.status(200).json({ message: 'Left subsaw successfully' });
 }
 
+const updateSubsaw = async (req, res) => {
+  const subsaw = req.subsaw;
+  const user = req.user;
+  const updates = req.body;
+
+  // Ensure only moderators can update the subsaw
+  if (!subsaw.moderators.includes(user._id)) {
+    return res.status(403).json({ error: 'Forbidden: Only moderators can update the subsaw.' });
+  }
+
+  // Update allowed fields
+  if (updates.description !== undefined) {
+    subsaw.description = updates.description;
+  }
+
+  // Add other fields as needed
+  // e.g., if (updates.bannerUrl !== undefined) { subsaw.bannerUrl = updates.bannerUrl; }
+
+  try {
+    const updatedSubsaw = await subsaw.save();
+    res.status(200).json(updatedSubsaw);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update subsaw.' });
+  }
+};
+
+
 module.exports = {
   createSubsaw,
   getSubsaw, 
   joinSubsaw,
-  leaveSub
+  leaveSub,
+  updateSubsaw
 }

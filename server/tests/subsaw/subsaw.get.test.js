@@ -70,4 +70,18 @@ describe('GET /api/s/:name', () => {
     const res = await api.get('/api/s/funnystuff').expect(200);
     expect(res.body.displayName).toBe('FunnyStuff');
   });
+
+  test.only('returns isModerator = true if requester is a mod', async () => {
+    await signup();
+  
+    const subsawName = "TestSubsaw";
+    const description = "Mod check";
+  
+    await agent.post('/api/s/').send({ subsawName, description });
+  
+    const res = await agent.get(`/api/s/${subsawName}`).expect(200);
+    
+    expect(res.body.isModerator).toBe(true);
+  });
+  
 });

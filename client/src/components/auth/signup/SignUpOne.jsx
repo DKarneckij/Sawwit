@@ -27,7 +27,7 @@ const SignUpOne = ({ email, setEmail, onNext, setShowLogin }) => {
           <button
             type="button"
             onClick={() => setShowLogin(true)}
-            className="text-cyan-700 hover:underline dark:text-cyan-500"
+            className="cursor-pointer text-cyan-700 hover:underline dark:text-cyan-500"
           >
             Log In
           </button>
@@ -37,7 +37,7 @@ const SignUpOne = ({ email, setEmail, onNext, setShowLogin }) => {
       <div className="flex justify-center pb-4">
         <Button
           type="submit"
-          className="bg-sawwit-blue rounded-full w-[250px] font-bold"
+          className="cursor-pointer bg-sawwit-blue rounded-full w-[250px] font-bold"
         >
           Continue
         </Button>
