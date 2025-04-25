@@ -1,16 +1,17 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsis, faShieldHalved } from '@fortawesome/free-solid-svg-icons';
-import { useSubsaw } from '@contexts/subsawContext';
+import { usePermission } from '@hooks/usePermission';
 
 const FirstBoxBanner = () => {
-  const { subsaw } = useSubsaw();
+  
+  const { isModerator } = usePermission()
 
   return (
     <div className="flex items-center h-[48px] mx-[-12px] rounded-t bg-sawwit-secondary bg-cover text-white">
       <p className="font-bold text-[14px] pl-4">About Community</p>
       <div className="grow"></div>
 
-      {subsaw?.isModerator && (
+      {isModerator && (
         <div className="flex items-center hover:bg-sawwit-secondary-hover px-2 py-1 cursor-pointer">
           <FontAwesomeIcon icon={faShieldHalved} className="text-[17px]" />
           <p className="text-[12px] font-bold pl-1">Mod Tools</p>

@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import subsawService from '@services/subsawService';
 import { useSubsaw } from '@contexts/subsawContext';
 
 export default function ChangeDisc({ setEditDisc }) {
   const { name } = useParams();
-  const [disc, setDisc] = useState('');
-  const { setSubsaw } = useSubsaw();
+  const { subsaw, setSubsaw } = useSubsaw();
+
+  const [disc, setDisc] = useState(subsaw?.description || '');
+
+  useEffect(() => {
+    setDisc(subsaw?.description || '');
+  }, [subsaw]);
 
   const changeDisc = (event) => {
     setDisc(event.target.value);
@@ -18,7 +23,9 @@ export default function ChangeDisc({ setEditDisc }) {
 
   const updateDisc = async () => {
     try {
-      const updatedSubsaw = await subsawService.updateSubreddit(name, { description: disc });
+      const updatedSubsaw = await subsawService.updateSubsaw(name, {
+        description: disc,
+      });
       setSubsaw(updatedSubsaw);
       setEditDisc(false);
     } catch (err) {
@@ -29,7 +36,7 @@ export default function ChangeDisc({ setEditDisc }) {
   return (
     <div className='p-2 mt-7 mb-2 rounded border border-[#d5d7d8] bg-[#f6f7f8] hover:border-[#47b0db] focus:outline-none'>
       <textarea
-        type='text'
+        value={disc}
         placeholder='Tell us about your community'
         onChange={changeDisc}
         className='h-32 w-full resize-none focus:outline-none bg-[#f6f7f8]'
@@ -37,10 +44,16 @@ export default function ChangeDisc({ setEditDisc }) {
       <div className='flex items-center'>
         <p className='text-[12px] text-[#939494]'>{500 - disc.length} characters remaining</p>
         <div className='grow'></div>
-        <button className='text-red-500 font-extrabold text-[12px] mr-2 focus:outline-none' onClick={closeDisc}>
+        <button
+          className='text-red-500 cursor-pointer font-extrabold text-[12px] mr-2 focus:outline-none'
+          onClick={closeDisc}
+        >
           Cancel
         </button>
-        <button className='text-blue-500 font-extrabold text-[12px] focus:outline-none' onClick={updateDisc}>
+        <button
+          className='cursor-pointer text-blue-500 font-extrabold text-[12px] focus:outline-none'
+          onClick={updateDisc}
+        >
           Save
         </button>
       </div>

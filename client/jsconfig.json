@@ -7,7 +7,8 @@
       "@pages/*": ["pages/*"],
       "@auth/*": ["components/auth/*"],
       "@services/*": ["services/*"],
-      "@layout/*": ["components/layout/*"]
+      "@layout/*": ["components/layout/*"],
+      "@hooks/*": ["hooks/*"],
     }
   }
 }

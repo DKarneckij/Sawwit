@@ -96,8 +96,34 @@ const logoutUser = async (req, res) => {
 }
 
 const getMe = async (req, res) => {
-  const user = req.user
-  res.status(200).json(user);
+
+  const user = await User.findById(req.user._id)
+    .populate({
+      path: 'subsawsJoined',
+      select: 'displayName subsawName pfpUrl moderators',
+    });
+
+  console.log(user);
+
+  const enrichedSubsaws = user.subsawsJoined.map(sub => ({
+    id: sub._id.toString(),
+    name: sub.subsawName,
+    displayName: sub.displayName,
+    pfpUrl: sub.pfpUrl,
+    isModerator: sub.moderators.some(modId =>
+      modId.toString() === user._id.toString()
+    ),
+  }));
+
+  res.status(200).json({
+    id: user._id.toString(),
+    displayName: user.displayName,
+    username: user.username,
+    email: user.email,
+    profilePicture: user.profilePicture,
+    karma: user.karma,
+    subsawsJoined: enrichedSubsaws,
+  });
 };
 
 module.exports = {

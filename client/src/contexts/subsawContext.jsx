@@ -7,7 +7,6 @@ const SubsawContext = createContext();
 
 export const SubsawProvider = ({ children }) => {
   const { name } = useParams();
-  const { user } = useAuth(); // ✅ get current user from context
   const [subsaw, setSubsaw] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -27,7 +26,7 @@ export const SubsawProvider = ({ children }) => {
     };
 
     fetchSubsaw();
-  }, [name, user]); // ✅ refetch subsaw when user logs in/out
+  }, [name]);
 
   return (
     <SubsawContext.Provider value={{ subsaw, setSubsaw, loading }}>

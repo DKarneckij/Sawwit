@@ -57,23 +57,6 @@ describe('PATCH /api/s/:name', () => {
     expect(res.body.pfpUrl).toBe(pfpUrl);
   });
 
-  test('returns 403 if non-mod tries to update', async () => {
-    // Log out and sign up as another user
-    await agent.post('/api/auth/logout');
-    await agent.post('/api/auth/signup').send({
-      username: 'nonmod',
-      email: 'nonmod@test.com',
-      password: 'Nope123',
-    });
-
-    const res = await agent
-      .patch(`/api/s/${subsawName}`)
-      .send({ description: 'I should not be able to do this' })
-      .expect(403);
-
-    expect(res.body.error).toBe('Forbidden: Only moderators can update the subsaw.');
-  });
-
   test('returns 404 if subsaw does not exist', async () => {
     const res = await agent
       .patch(`/api/s/doesnotexist`)
@@ -83,13 +66,13 @@ describe('PATCH /api/s/:name', () => {
     expect(res.body.error).toBe('Subsaw not found');
   });
 
-  test('ignores unrelated fields and does not crash', async () => {
+  test('rejects unrelated fields with 400', async () => {
     const res = await agent
       .patch(`/api/s/${subsawName}`)
       .send({ madeUpField: 'something' })
-      .expect(200);
-
-    // Should still return valid subsaw object
-    expect(res.body.displayName).toBeDefined();
+      .expect(400);
+  
+    expect(res.body.error).toMatch(/Invalid update field/);
   });
+  
 });

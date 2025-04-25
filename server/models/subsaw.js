@@ -11,7 +11,9 @@ const subsawSchema = new mongoose.Schema({
     required: true
   },
   description: {
-    type: String
+    type: String,
+    default: 'This community does not have a description yet.',
+    maxlength: [500, 'Description cannot exceed 500 characters.']
   },
   bannerUrl: {
     type: String,
@@ -21,7 +23,7 @@ const subsawSchema = new mongoose.Schema({
     type: String,
     default: null
   },
-  pfpUrl: {
+  iconUrl: {
     type: String,
     default: 'https://res.cloudinary.com/dperxfai0/image/upload/v1715459247/assets/default_profile.png'
   },

@@ -10,7 +10,7 @@ const SignUpForm = ({ setShowLogin, onClose, setGlobalOnBack }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [formError, setFormError] = useState('');
-  const { login } = useAuth();
+  const { refreshUser } = useAuth();
 
   useEffect(() => {
   if (!setGlobalOnBack) return;
@@ -26,8 +26,8 @@ const SignUpForm = ({ setShowLogin, onClose, setGlobalOnBack }) => {
     e.preventDefault(); // to support Enter key
     try {
       setFormError('');
-      const user = await signup({ email, username, password });
-      login(user);
+      await signup({ email, username, password });
+      await refreshUser();
       onClose();
     } catch (err) {
       setFormError(err.message);

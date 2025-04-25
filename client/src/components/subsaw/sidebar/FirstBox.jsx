@@ -16,7 +16,7 @@ export default function FirstBox() {
 
   return (
     <div className='
-      w-[312px] px-3 bg-white rounded
+      w-[312px] px-3 pb-3 bg-white rounded
       border border-component-border'>
       
       <FirstBoxBanner />
@@ -32,8 +32,8 @@ export default function FirstBox() {
       <hr className='my-3 text-border-hover'/>
 
       {/*Create Post Button */}
-      <div className='flex flex-col'>
-        <button onClick={handleClick} className="inline-flex items-center justify-center h-[32px] bg-sawwit-secondary font-bold text-white text-center rounded-full hover:bg-sawwit-secondary-hover">Create Post</button>
+      <div className='flex flex-col py-2'>
+        <button onClick={handleClick} className="cursor-pointer inline-flex items-center justify-center h-[32px] bg-sawwit-secondary font-bold text-white text-center rounded-full hover:bg-sawwit-secondary-hover">Create Post</button>
       </div>
 
     </div>

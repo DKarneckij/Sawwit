@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { TextInput } from 'flowbite-react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@contexts/authContext';
 import ModalWrapper from '@components/modals/ModalWrapper';
 import subsawService from '@services/subsawService'
 
 const CreateCommunityModal = ({ isOpen, onClose }) => {
   const [name, setName] = useState('');
   const [error, setError] = useState('');
+  const { refreshUser } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,6 +25,8 @@ const CreateCommunityModal = ({ isOpen, onClose }) => {
     }
     try {
       await subsawService.create(name); // or { name } depending on backend
+      await refreshUser();
+
       setError('');
       setName('');
       onClose();

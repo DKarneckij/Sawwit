@@ -7,14 +7,14 @@ const LoginForm = ({ setShowLogin, onClose }) => {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [formError, setFormError] = useState('');
-  const { setUser } = useAuth(); // or use login() if you created a wrapper
+  const { refreshUser } = useAuth(); // or use login() if you created a wrapper
 
   const handleLogin = async (e) => {
     e.preventDefault(); // to support Enter key
     try {
       setFormError('');
-      const user = await loginService({ identifier, password });
-      setUser(user); // this updates context and triggers UI changes
+      await loginService({ identifier, password });
+      await refreshUser()
       onClose();     // close modal
     } catch (err) {
       setFormError(err.message); // show backend error (e.g. "Invalid password")

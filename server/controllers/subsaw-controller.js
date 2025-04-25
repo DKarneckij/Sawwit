@@ -16,7 +16,6 @@ const createSubsaw = async (req, res) => {
   const newSubsaw = new Subsaw({
     displayName: subsawName,
     subsawName: subsawName.toLowerCase(),
-    description: req.body.description || '',
     moderators: [user._id],
     subscribers: [user._id],
   });
@@ -33,16 +32,8 @@ const createSubsaw = async (req, res) => {
 }
 
 const getSubsaw = async (req, res) => {
+
   const subsaw = req.subsaw;
-  const user = req.user;
-
-  const isSubscribed = user
-    ? subsaw.subscribers.some(sub => sub.equals(user._id))
-    : false;
-
-  const isModerator = user
-    ? subsaw.moderators.some(mod => mod.equals(user._id))
-    : false;
   
   res.status(200).json({
     id: subsaw._id.toString(),
@@ -53,19 +44,14 @@ const getSubsaw = async (req, res) => {
     subscriberCount: subsaw.subscriberCount,
     bannerUrl: subsaw.bannerUrl,
     backgroundUrl: subsaw.backgroundUrl,
-    pfpUrl: subsaw.pfpUrl,
-    isSubscribed,
-    isModerator
+    iconUrl: subsaw.iconUrl
   });
 };
 
 
 const joinSubsaw = async (req, res) => {
 
-  // Find the user
   const user = req.user 
-  
-  // Find the subsaw
   const subsaw = req.subsaw
   
   // Check if user is already subscribed
@@ -119,19 +105,22 @@ const updateSubsaw = async (req, res) => {
   const subsaw = req.subsaw;
   const user = req.user;
   const updates = req.body;
-
+  console.log(user);
+  
   // Ensure only moderators can update the subsaw
   if (!subsaw.moderators.includes(user._id)) {
     return res.status(403).json({ error: 'Forbidden: Only moderators can update the subsaw.' });
   }
 
-  // Update allowed fields
-  if (updates.description !== undefined) {
-    subsaw.description = updates.description;
+  // Allowed fields to patch
+  const allowedFields = ['description', 'bannerUrl', 'iconUrl', 'backgroundUrl'];
+  for (let key of Object.keys(updates)) {
+    if (allowedFields.includes(key)) {
+      subsaw[key] = updates[key];
+    } else {
+      return res.status(400).json({ error: `Invalid update field: ${key}` });
+    }
   }
-
-  // Add other fields as needed
-  // e.g., if (updates.bannerUrl !== undefined) { subsaw.bannerUrl = updates.bannerUrl; }
 
   try {
     const updatedSubsaw = await subsaw.save();
@@ -140,6 +129,7 @@ const updateSubsaw = async (req, res) => {
     res.status(500).json({ error: 'Failed to update subsaw.' });
   }
 };
+
 
 
 module.exports = {

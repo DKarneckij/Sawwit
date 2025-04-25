@@ -1,29 +1,56 @@
 import { useState } from 'react';
 import { useSubsaw } from '@contexts/subsawContext';
+import { useAuth } from '@contexts/authContext';
 import subsawService from '@services/subsawService';
 
 const JoinLeaveButton = () => {
   const { subsaw, setSubsaw } = useSubsaw();
+  const { user, setUser } = useAuth();
+
   const [hover, setHover] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleToggle = async () => {
-    if (!subsaw) return;
-    setLoading(true);
+  if (!subsaw || !user) return null;
 
+  const isJoined = user.subsawsJoined?.some(sub => sub.id === subsaw.id);
+
+  const handleToggle = async () => {
+    setLoading(true);
     try {
-      if (subsaw.isSubscribed) {
+      if (isJoined) {
         await subsawService.leave(subsaw.subsawName);
+
+        // Remove from user context
+        const updatedUser = {
+          ...user,
+          subsawsJoined: user.subsawsJoined.filter(sub => sub.id !== subsaw.id),
+        };
+        setUser(updatedUser);
+
+        // Update subsaw subscriber count
         setSubsaw({
           ...subsaw,
-          isSubscribed: false,
           subscriberCount: subsaw.subscriberCount - 1,
         });
       } else {
         await subsawService.join(subsaw.subsawName);
+
+        const newSub = {
+          id: subsaw.id,
+          name: subsaw.name,
+          displayName: subsaw.displayName,
+          pfpUrl: subsaw.pfpUrl,
+          isModerator: false, // Default assumption
+        };
+
+        const updatedUser = {
+          ...user,
+          subsawsJoined: [...user.subsawsJoined, newSub],
+        };
+        setUser(updatedUser);
+
         setSubsaw({
           ...subsaw,
-          isSubscribed: true,
           subscriberCount: subsaw.subscriberCount + 1,
         });
       }
@@ -34,7 +61,6 @@ const JoinLeaveButton = () => {
     }
   };
 
-  const isJoined = subsaw?.isSubscribed;
   const buttonText = isJoined ? (hover ? 'Leave' : 'Joined') : 'Join';
 
   const baseStyle =
