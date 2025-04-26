@@ -33,7 +33,8 @@ const createSubsaw = async (req, res) => {
 
 const getSubsaw = async (req, res) => {
 
-  const subsaw = req.subsaw;
+  const subsaw = await Subsaw.findById(req.subsaw._id)
+    .populate('moderators', 'displayName username');
   
   res.status(200).json({
     id: subsaw._id.toString(),
@@ -44,7 +45,13 @@ const getSubsaw = async (req, res) => {
     subscriberCount: subsaw.subscriberCount,
     bannerUrl: subsaw.bannerUrl,
     backgroundUrl: subsaw.backgroundUrl,
-    iconUrl: subsaw.iconUrl
+    iconUrl: subsaw.iconUrl,
+
+    moderators: subsaw.moderators.map((mod) => ({
+      id: mod._id.toString(),
+      displayName: mod.displayName,
+      username: mod.username
+    }))
   });
 };
 

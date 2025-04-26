@@ -6,7 +6,6 @@ import SubsawPage from '@pages/SubsawPage';
 import SubmitPage from '@pages/SubmitPage';
 import SubsawLayout from '@components/layout/SubsawLayout';
 
-
 function App() {
   return (
     <AuthProvider>
@@ -23,6 +22,7 @@ function App() {
             <Route path=':name' element={<SubsawPage />}/>
             <Route path=":name/submit" element={<SubmitPage />} />
           </Route>
+          
         </Routes>
       </Router>
     </AuthProvider>

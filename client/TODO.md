@@ -21,3 +21,5 @@ When leaeving a subsaw, make sure they get rid of their moderator status on that
 When leaving a subsaw, make sure that the owner is not able to leave.
 
 Make sure loginservice/signupservice doesn't actually retur any data, but only sets the cookies. setup the client to always refreshUser(). 
+
+Error handling for the forms
