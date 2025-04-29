@@ -4,7 +4,7 @@ const mongooseUniqueValidator = require('mongoose-unique-validator');
 const postSchema = new mongoose.Schema({
   type: {
     type: String,
-    enum: ['text', 'image'],
+    enum: ['text', 'media', 'link'],
     required: true
   },
   author: {

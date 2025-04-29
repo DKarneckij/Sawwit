@@ -2,11 +2,11 @@ import axios from 'axios';
 
 const API_BASE = '/api/s';
 
-const create = async (name) => {
+const create = async (subsawName) => {
   try {
     const response = await axios.post(
       `${API_BASE}`,
-      { subsawName: name },
+      { subsawName: subsawName },
       { withCredentials: true }
     );
     return response.data;
@@ -19,9 +19,9 @@ const create = async (name) => {
   }
 };
 
-const getByName = async (name) => {
+const getByName = async (subsawName) => {
   try {
-    const response = await axios.get(`${API_BASE}/${name}`, {
+    const response = await axios.get(`${API_BASE}/${subsawName}`, {
       withCredentials: true,
     });
     return response.data;
@@ -56,9 +56,9 @@ const leave = async (subsawName) => {
   }
 };
 
-const updateSubsaw = async (name, data) => {
+const updateSubsaw = async (subsawName, data) => {
   try {
-    const response = await axios.patch(`/api/s/${name}`, data, {
+    const response = await axios.patch(`/api/s/${subsawName}`, data, {
       withCredentials: true,
     });
     return response.data;

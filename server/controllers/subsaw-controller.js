@@ -33,7 +33,7 @@ const createSubsaw = async (req, res) => {
 
 const getSubsaw = async (req, res) => {
 
-  const subsaw = await Subsaw.findById(req.subsaw._id)
+  const subsaw = await Subsaw.findById(req.subsaw.id)
     .populate('moderators', 'displayName username');
   
   res.status(200).json({

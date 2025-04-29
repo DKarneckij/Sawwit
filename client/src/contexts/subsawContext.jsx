@@ -6,7 +6,7 @@ import { useAuth } from '@contexts/authContext'; // ✅ import auth
 const SubsawContext = createContext();
 
 export const SubsawProvider = ({ children }) => {
-  const { name } = useParams();
+  const { subsawName } = useParams();
   const [subsaw, setSubsaw] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -14,7 +14,7 @@ export const SubsawProvider = ({ children }) => {
     const fetchSubsaw = async () => {
       setLoading(true); // ✅ needed to re-trigger loading state
       try {
-        const data = await subsawService.getByName(name);
+        const data = await subsawService.getByName(subsawName);
         console.log(data);
         setSubsaw(data);
       } catch (err) {
@@ -26,7 +26,7 @@ export const SubsawProvider = ({ children }) => {
     };
 
     fetchSubsaw();
-  }, [name]);
+  }, [subsawName]);
 
   return (
     <SubsawContext.Provider value={{ subsaw, setSubsaw, loading }}>

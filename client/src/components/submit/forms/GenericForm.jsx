@@ -1,27 +1,36 @@
 import { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom'
 import TitleInput from '@components/submit/forms/TitleInput';
 import TextForm from '@components/submit/forms/TextForm';
 // import MediaForm from '@components/submit/forms/MediaForm';
 // import LinkForm from '@components/submit/forms/LinkForm';
 import PostActions from '@components/submit/PostActions';
+import postService from '@services/postService';
 
 const GenericForm = ({ activeTab }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const isFormValid = title.trim().length > 0 && content.trim().length > 0;
+  const { subsawName } = useParams();
+  const navigate = useNavigate();
 
-
-  const handleSubmit = (e) => {
-
-    if (!isFormValid) {
-      console.log('Form invalid: missing title or content.');
-      return; // Stop submission if form is invalid
-    }
-
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Submitting:', { title, content, activeTab });
-    // TODO: Replace with your actual API call
+  
+    try {
+      const { id: createdPostId } = await postService.create({
+        title,
+        content,
+        type: activeTab,
+        subsawName
+      });
+  
+      navigate(`/s/${subsawName}/posts/${createdPostId}`);
+    } catch (error) {
+      console.error('Failed to create post:', error.message || error);
+    }
   };
+  
 
   return (
     <form onSubmit={handleSubmit} className="p-4 space-y-6">

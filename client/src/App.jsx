@@ -4,6 +4,7 @@ import Navbar from '@components/layout/Navbar'
 import HomePage from '@pages/HomePage'
 import SubsawPage from '@pages/SubsawPage';
 import SubmitPage from '@pages/SubmitPage';
+import PostPage from '@pages/PostPage'
 import SubsawLayout from '@components/layout/SubsawLayout';
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
       <Router>
         <Navbar />
         <Routes>
+
           <Route path='/' element={<HomePage/>}/>
 
           {/* Global /submit route */}
@@ -19,8 +21,10 @@ function App() {
 
           {/* Subreddit layout + nested pages */}
           <Route path="/s" element={<SubsawLayout/>} > 
-            <Route path=':name' element={<SubsawPage />}/>
-            <Route path=":name/submit" element={<SubmitPage />} />
+            <Route path=':subsawName' element={<SubsawPage />} />
+            <Route path=":subsawName/submit" element={<SubmitPage />} />
+            
+            <Route path=":subsawName/posts/:postId" element={<PostPage />} />
           </Route>
           
         </Routes>

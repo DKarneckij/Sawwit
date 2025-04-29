@@ -16,7 +16,7 @@ const validatePost = require('@routers/utils/validatePost');
 const { validateCreatePost } = require('@routers/validators/postValidator');
 
 // Routes
-postsRouter.post('/submit', validateCreatePost, validateRequest, requireAuth, createPost);
+postsRouter.post('/', validateCreatePost, validateRequest, requireAuth, createPost);
 postsRouter.get('/:postId', optionalAuth, validatePost, getPost);
 postsRouter.post('/:postId/upvote', requireAuth, validatePost, upvotePost);
 postsRouter.post('/:postId/downvote', requireAuth, validatePost, downvotePost);

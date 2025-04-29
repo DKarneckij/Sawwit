@@ -3,23 +3,20 @@ const Vote = require('@models/vote')
 const attachUserVote = require('./utils/attachUserVote');
 
 const createPost = async (req, res) => {
+  const user = req.user;
+  const subsaw = req.subsaw;
 
-  const user = req.user
-  const subsaw = req.subsaw
-  
-  // Create new Post in the DB
   const newPostData = {
     title: req.body.title,
     type: req.body.type,
     content: req.body.content,
-    author: user._id, 
-    subsaw: subsaw._id
-  }
+    author: user._id,
+    subsaw: subsaw._id,
+  };
 
-  // Save new post
   const newPost = await new Post(newPostData).save();
-  
-  // Automatically upvote the post by the author (default score is 1)
+
+  // Automatically upvote the post
   await Vote.create({
     userId: user._id,
     targetId: newPost._id,
@@ -27,26 +24,29 @@ const createPost = async (req, res) => {
     targetType: 'Post'
   });
 
+  // Update user karma and posts
   user.karma += 1;
   user.posts.push(newPost._id);
   await user.save();
 
+  // Update subsaw posts
   subsaw.posts.push(newPost._id);
   await subsaw.save();
-  
-  const postWithVote = await attachUserVote(newPost, user._id, 'Post');
-  res.status(201).json(postWithVote);
-}
+
+  res.status(201).json({ id: newPost._id.toString() });
+};
+
+module.exports = {
+  createPost,
+};
+
 
 const getPost = async (req, res) => {
-  
   let post = req.post; // validatePost already attached post
-
   if (req.user) {
     // Only attach userVote if logged in
     post = await attachUserVote(post, req.user._id, 'Post');
   }
-
   return res.status(200).json(post);
 };
 

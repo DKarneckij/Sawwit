@@ -8,7 +8,7 @@ const HomePage = () => {
 
   return (
     <>
-      <main className='flex bg-main-background min-h-[calc(100vh-48px)] py-5 px-6
+      <main className='flex bg-main-background min-h-[calc(100vh-56px)] py-5 px-6
         [@media(max-width:640px)]:p-0'>
         
         {/*Main Container */}
