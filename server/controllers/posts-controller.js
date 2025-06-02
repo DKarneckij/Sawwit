@@ -40,7 +40,6 @@ module.exports = {
   createPost,
 };
 
-
 const getPost = async (req, res) => {
   let post = req.post; // validatePost already attached post
   if (req.user) {

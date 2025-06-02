@@ -1,6 +1,10 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import PostContentRenderer from '@components/posts/PostContentRenderer';
 import postService from '@services/postService';
+import PostBanner from '@components/banner/PostBanner'
+import Sidebar from '@components/subsaw/sidebar'
+import TextPost from '@components/posts/TextPost'
 
 const PostPage = () => {
   const { subsawName, postId } = useParams();
@@ -25,10 +29,18 @@ const PostPage = () => {
   if (!post) return <div>Post not found.</div>;
 
   return (
-    <div className="flex justify-center items-center min-h-[calc(100vh-56px)] bg-main-background">
-      <div className="bg-white p-6 rounded shadow-md max-w-2xl w-full">
-        <h1 className="text-2xl font-bold mb-4">{post.title}</h1>
-        <p className="text-gray-600">{post.content}</p>
+    <div className='flex flex-col'>
+      
+      {/* Top Banner */}
+      <PostBanner />
+
+      <div className="flex justify-center min-h-[calc(100vh-56px)] bg-main-background p-4">
+
+        <TextPost post={post} />
+
+        {/*Right Sidebar */}
+        <Sidebar />
+        
       </div>
     </div>
   );

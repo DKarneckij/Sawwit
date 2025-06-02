@@ -11,8 +11,8 @@ const validatePost = async (req, res, next) => {
 
   try {
     const post = await Post.findOne({ _id: postId, subsaw: subsaw._id })
-      .populate('author', 'username')
-      .populate('subsaw', 'subsawName displayName');
+      .populate('author', 'username displayName')
+      .populate('subsaw', 'subsawName displayName iconUrl');
 
     if (!post) {
       return res.status(404).json({ error: 'Post not found in this subsaw' });

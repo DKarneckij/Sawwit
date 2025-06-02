@@ -40,7 +40,7 @@ const join = async (subsawName) => {
       withCredentials: true,
     });
     return res.data;
-  } catch (err) {
+  } catch {
     throw new Error('Failed to join community');
   }
 };
@@ -51,7 +51,7 @@ const leave = async (subsawName) => {
       withCredentials: true,
     });
     return res.data;
-  } catch (err) {
+  } catch {
     throw new Error('Failed to leave community');
   }
 };

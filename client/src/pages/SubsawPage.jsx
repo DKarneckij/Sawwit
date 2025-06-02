@@ -12,7 +12,7 @@ const SubsawContent = () => {
   if (notFound) return <SubsawNotFound />;
 
   return (
-    <div className="flex flex-col min-h-screen ">
+    <div className="flex flex-col min-h-screen">
       <Banner />
 
       {/* This fills the rest of the screen with gray */}
