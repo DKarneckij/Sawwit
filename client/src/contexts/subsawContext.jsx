@@ -15,7 +15,6 @@ export const SubsawProvider = ({ children }) => {
       setLoading(true); // ✅ needed to re-trigger loading state
       try {
         const data = await subsawService.getByName(subsawName);
-        console.log(data);
         setSubsaw(data);
       } catch (err) {
         console.error('Failed to fetch subsaw:', err.message);

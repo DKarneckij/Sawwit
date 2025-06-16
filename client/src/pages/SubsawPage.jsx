@@ -3,7 +3,7 @@ import Banner from '@components/subsaw/banner';
 import SubsawNotFound from '@pages/SubsawNotFoundPage';
 import CreatePostBar from '@components/post/CreatePostBar';
 import PostsToolbar from '@components/post/PostsToolbar';
-import Sidebar from '@components/subsaw/sidebar'
+import Sidebar from '@components/sidebar/subsaw'
 
 const SubsawContent = () => {
   const { loading, notFound } = useSubsaw();

@@ -1,5 +1,6 @@
 const Post = require('@models/post')
 const Vote = require('@models/vote')
+const Comment = require('@models/comment')
 const attachUserVote = require('./utils/attachUserVote');
 
 const createPost = async (req, res) => {
@@ -10,30 +11,30 @@ const createPost = async (req, res) => {
     title: req.body.title,
     type: req.body.type,
     content: req.body.content,
-    author: user._id,
-    subsaw: subsaw._id,
+    author: user.id,
+    subsaw: subsaw.id,
   };
 
   const newPost = await new Post(newPostData).save();
 
   // Automatically upvote the post
   await Vote.create({
-    userId: user._id,
-    targetId: newPost._id,
+    userId: user.id,
+    targetId: newPost.id,
     voteType: 'upvote',
     targetType: 'Post'
   });
 
   // Update user karma and posts
   user.karma += 1;
-  user.posts.push(newPost._id);
+  user.posts.push(newPost.id);
   await user.save();
 
   // Update subsaw posts
-  subsaw.posts.push(newPost._id);
+  subsaw.posts.push(newPost.id);
   await subsaw.save();
 
-  res.status(201).json({ id: newPost._id.toString() });
+  res.status(201).json({ id: newPost.id.toString() });
 };
 
 module.exports = {
@@ -41,13 +42,39 @@ module.exports = {
 };
 
 const getPost = async (req, res) => {
-  let post = req.post; // validatePost already attached post
+  let post = req.post; // Attached by validatePost middleware (unpopulated)
+
+  await post.populate([
+    { path: 'author', select: 'displayName username profilePic' },
+    { path: 'subsaw', select: 'subsawName displayName iconUrl' },
+  ]);
+  
+
+  // Attach user vote for post if logged in
   if (req.user) {
-    // Only attach userVote if logged in
     post = await attachUserVote(post, req.user._id, 'Post');
   }
-  return res.status(200).json(post);
-};
+
+  // Fetch top-level comments for this post
+  let comments = await Comment.find({
+    commentableType: 'Post',
+    commentableId: post.id,
+  })
+    .sort({ createdAt: -1 }) // optional: sort oldest-to-newest, etc.
+    .populate('author', 'displayName username profilePicture')
+    .lean();
+
+  // // Optionally attach userVote to each comment
+  // if (req.user) {
+  //   comments = await Promise.all(
+  //     comments.map((comment) =>
+  //       attachUserVote(comment, req.user._id, 'Comment')
+  //     )
+  //   );
+  // }
+
+  return res.status(200).json({ ...post, comments });
+}
 
 // Utility to adjust post score
 const adjustPostScore = async (postId, delta) => {

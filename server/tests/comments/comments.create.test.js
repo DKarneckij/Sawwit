@@ -38,7 +38,7 @@ const signupCreateSubsawAndPost = async () => {
     description: 'Subsaw for comment testing'
   });
 
-  const postRes = await agent.post('/api/s/CommentTestSubsaw/posts/submit').send({
+  const postRes = await agent.post('/api/s/CommentTestSubsaw/posts').send({
     title: 'Post for Comments',
     type: 'text',
     content: 'Commentable post!'
@@ -53,14 +53,16 @@ const signupCreateSubsawAndPost = async () => {
 
 describe('POST /api/s/:subsawName/posts/:postId/comments', () => {
   test('successfully creates a top-level comment on a post', async () => {
-    const { post, subsaw } = await signupCreateSubsawAndPost();
+    const { post} = await signupCreateSubsawAndPost();
 
-    const res = await agent.post(`/api/s/${subsaw.subsawName}/posts/${post.id}/comments`).send({
+    const res = await agent.post(`/api/comments`).send({
       content: 'This is my first comment!',
       commentableType: 'Post',
       commentableId: post.id
     });
-
+    console.log(res.body);
+    
+    
     expect(res.status).toBe(201);
     expect(res.body.content).toBe('This is my first comment!');
     expect(res.body.commentableType).toBe('Post');
@@ -70,7 +72,7 @@ describe('POST /api/s/:subsawName/posts/:postId/comments', () => {
   test('fails to create a comment without content', async () => {
     const { post, subsaw } = await signupCreateSubsawAndPost();
 
-    const res = await agent.post(`/api/s/${subsaw.subsawName}/posts/${post.id}/comments`).send({
+    const res = await agent.post(`/api/comments`).send({
       content: '',
       commentableType: 'Post',
       commentableId: post.id
@@ -85,7 +87,7 @@ describe('POST /api/s/:subsawName/posts/:postId/comments', () => {
 
     const unauth = supertest.agent(app);
 
-    const res = await unauth.post(`/api/s/${subsaw.subsawName}/posts/${post.id}/comments`).send({
+    const res = await unauth.post(`/api/comments`).send({
       content: 'No Auth!',
       commentableType: 'Post',
       commentableId: post.id
@@ -99,7 +101,7 @@ describe('POST /api/s/:subsawName/posts/:postId/comments', () => {
     const { subsaw } = await signupCreateSubsawAndPost();
 
     const fakePostId = '660cfc3b0bd558001efc1a23'; // fake ObjectId
-    const res = await agent.post(`/api/s/${subsaw.subsawName}/posts/${fakePostId}/comments`).send({
+    const res = await agent.post(`/api/comments`).send({
       content: 'Ghost Post',
       commentableType: 'Post',
       commentableId: fakePostId
@@ -115,7 +117,7 @@ describe('POST /api/s/:subsawName/posts/:postId/comments', () => {
 
     const longContent = 'a'.repeat(5001);
 
-    const res = await agent.post(`/api/s/${subsaw.subsawName}/posts/${post.id}/comments`).send({
+    const res = await agent.post(`/api/comments`).send({
       content: longContent,
       commentableType: 'Post',
       commentableId: post.id
@@ -129,7 +131,7 @@ describe('POST /api/s/:subsawName/posts/:postId/comments', () => {
   test('fails to create a comment with only spaces', async () => {
     const { post, subsaw } = await signupCreateSubsawAndPost();
 
-    const res = await agent.post(`/api/s/${subsaw.subsawName}/posts/${post.id}/comments`).send({
+    const res = await agent.post(`/api/comments`).send({
       content: '        ',
       commentableType: 'Post',
       commentableId: post.id
@@ -144,7 +146,7 @@ describe('POST /api/s/:subsawName/posts/:postId/comments', () => {
     const { post, subsaw } = await signupCreateSubsawAndPost();
 
     // First create a top-level comment
-    const topLevelRes = await agent.post(`/api/s/${subsaw.subsawName}/posts/${post.id}/comments`).send({
+    const topLevelRes = await agent.post(`/api/comments`).send({
       content: 'Top-level comment',
       commentableType: 'Post',
       commentableId: post.id
@@ -155,7 +157,7 @@ describe('POST /api/s/:subsawName/posts/:postId/comments', () => {
     const parentCommentId = topLevelRes.body._id;
 
     // Now create a reply to that comment
-    const replyRes = await agent.post(`/api/s/${subsaw.subsawName}/posts/${post.id}/comments`).send({
+    const replyRes = await agent.post(`/api/comments`).send({
       content: 'Replying to top-level',
       commentableType: 'Comment',
       commentableId: parentCommentId
@@ -172,7 +174,7 @@ describe('POST /api/s/:subsawName/posts/:postId/comments', () => {
 
     const fakeCommentId = '660cfc3b0bd558001efc1aaa'; // fake ObjectId
 
-    const res = await agent.post(`/api/s/${subsaw.subsawName}/posts/${post.id}/comments`).send({
+    const res = await agent.post(`/api/comments`).send({
       content: 'Reply to ghost comment',
       commentableType: 'Comment',
       commentableId: fakeCommentId

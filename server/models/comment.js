@@ -1,32 +1,35 @@
 const mongoose = require('mongoose');
+const { Schema, Types } = mongoose;
 
-const commentSchema = new mongoose.Schema({
-  content: {
-    type: String,
-    required: true,
-    trim: true
+const commentSchema = new Schema(
+  {
+    content: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    author: {
+      type: Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    postId: {
+      type: Types.ObjectId,
+      ref: 'Post',
+      required: true,
+    },
+    // null = top-level comment, otherwise reply to a comment
+    parentId: {
+      type: Types.ObjectId,
+      ref: 'Comment',
+      default: null,
+    },
+    karma: {
+      type: Number,
+      default: 1, // auto-upvoted by author
+    },
   },
-  author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-
-  commentableType: {
-    type: String,
-    enum: ['Post', 'Comment'],  // <-- either a Post or another Comment
-    required: true
-  },
-  commentableId: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    refPath: 'commentableType' // <-- dynamic reference
-  },
-
-  karma: {
-    type: Number,
-    default: 1 // auto-upvoted by author on creation
-  }
-}, { timestamps: true }); // createdAt and updatedAt automatically
+  { timestamps: true }
+);
 
 module.exports = mongoose.model('Comment', commentSchema);

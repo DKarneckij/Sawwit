@@ -8,6 +8,7 @@ const middleware = require('./utils/middleware');
 // Routers
 const authRouter = require('@routers/auth-router');
 const subsawRouter = require('@routers/subsaw-router');
+const commentsRouter = require('@routers/comments-router')
 
 const app = express();
 
@@ -16,11 +17,12 @@ app.use(cors());
 app.use(express.static('build'));
 app.use(express.json());
 app.use(cookieParser());
-app.use(middleware.requestLogger)
+// app.use(middleware.requestLogger)
 
 // Routes
 app.use('/api/auth', authRouter);
 app.use('/api/s', subsawRouter);
+app.use('/api/comments', commentsRouter)
 
 // Fallback + Error Handling
 app.use(middleware.unknownEndpoint);

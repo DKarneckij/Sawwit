@@ -72,6 +72,7 @@ describe('GET /api/s/:name/posts/:postId', () => {
     
     const res = await api.get(`/api/s/testsubsaw/posts/${post.id}`).expect(200);
     expect(res.body.title).toBe(post.title);
+    expect(res.body.userVote).toBe('upvote');
   });
 
   test('returns 400 for non-existent post in a valid subsaw', async () => {

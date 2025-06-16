@@ -21,6 +21,6 @@ subsawRouter.get('/:subsawName', validateSubsaw, optionalAuth, getSubsaw);
 subsawRouter.patch('/:subsawName', validateSubsaw, requireAuth, updateSubsaw);
 subsawRouter.post('/:subsawName/join', validateSubsaw, requireAuth, joinSubsaw);
 subsawRouter.post('/:subsawName/leave', validateSubsaw, requireAuth, leaveSub);
-subsawRouter.use('/:subsawName/posts', validateSubsaw, postsRouter);
+subsawRouter.use('/:subsawName/posts', postsRouter);
 
 module.exports = subsawRouter;

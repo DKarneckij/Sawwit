@@ -29,13 +29,13 @@ const postSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  comments: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Comment'
-  }],
   karma: {
     type: Number,
     default: 1 // auto-upvoted by author on creation
+  },
+  commentCount: {
+    type: Number,
+    default: 0
   }
 });
 
