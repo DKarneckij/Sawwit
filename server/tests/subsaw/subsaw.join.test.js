@@ -24,7 +24,7 @@ beforeEach(async () => {
   });
 
   await agent.post('/api/s').send({
-    subsawName: 'TestSubsaw',
+    name: 'TestSubsaw',
     description: 'Description'
   });
 });

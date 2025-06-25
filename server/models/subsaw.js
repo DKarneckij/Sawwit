@@ -1,67 +1,57 @@
 const mongoose = require('mongoose');
-// const mongooseUniqueValidator = require('mongoose-unique-validator');
+const mongooseUniqueValidator = require('mongoose-unique-validator');
 
-const subsawSchema = new mongoose.Schema({
-  displayName: {
-    type: String,
-    required: true
+const subsawSchema = new mongoose.Schema(
+  {
+    displayName: {
+      type: String,
+      required: true
+    },
+    name: {
+      type: String,
+      required: true,
+      unique: true
+    },
+    description: {
+      type: String,
+      default: 'This community does not have a description yet.',
+      maxlength: [500, 'Description cannot exceed 500 characters.']
+    },
+    pfpUrl: {
+      type: String,
+      default: 'https://res.cloudinary.com/dperxfai0/image/upload/v1715459247/assets/default_profile.png'
+    },
+    bannerUrl: {
+      type: String,
+      default: null
+    },
+    backgroundUrl: {
+      type: String,
+      default: null
+    },
+    moderators: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    }],
+    subscribers: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    }],
+    subscriberCount: {
+      type: Number,
+      default: 1
+    },
+    posts: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Post'
+    }]
   },
-  subsawName: {
-    type: String,
-    required: true
-  },
-  description: {
-    type: String,
-    default: 'This community does not have a description yet.',
-    maxlength: [500, 'Description cannot exceed 500 characters.']
-  },
-  bannerUrl: {
-    type: String,
-    default: null
-  },
-  backgroundUrl: {
-    type: String,
-    default: null
-  },
-  iconUrl: {
-    type: String,
-    default: 'https://res.cloudinary.com/dperxfai0/image/upload/v1715459247/assets/default_profile.png'
-  },
-  date_created: {
-    type: Date,
-    required: true,
-    default: Date.now
-  },
-  moderators: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  }],
-  subscribers: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  }],
-  subscriberCount: {
-    type: Number,
-    default: 1
-  },
-  posts: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Post'
-  }]
-});
-
-// Optional plugin for unique validation if needed
-// subsawSchema.plugin(mongooseUniqueValidator);
-
-subsawSchema.set('toJSON', {
-  transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString();
-    delete returnedObject._id;
-    delete returnedObject.__v;
+  {
+    timestamps: true // ✅ correct usage here
   }
-});
+);
 
-const subsawModel = mongoose.model('Subsaw', subsawSchema);
+subsawSchema.plugin(mongooseUniqueValidator);
 
-module.exports = subsawModel;
+module.exports = mongoose.model('Subsaw', subsawSchema);

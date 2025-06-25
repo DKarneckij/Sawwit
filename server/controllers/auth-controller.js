@@ -100,14 +100,12 @@ const getMe = async (req, res) => {
   const user = await User.findById(req.user._id)
     .populate({
       path: 'subsawsJoined',
-      select: 'displayName subsawName pfpUrl moderators',
+      select: 'displayName name pfpUrl moderators',
     });
 
-  console.log(user);
-
   const enrichedSubsaws = user.subsawsJoined.map(sub => ({
-    id: sub._id.toString(),
-    name: sub.subsawName,
+    _id: sub._id.toString(),
+    name: sub.name,
     displayName: sub.displayName,
     pfpUrl: sub.pfpUrl,
     isModerator: sub.moderators.some(modId =>
@@ -116,7 +114,7 @@ const getMe = async (req, res) => {
   }));
 
   res.status(200).json({
-    id: user._id.toString(),
+    _id: user._id.toString(),
     displayName: user.displayName,
     username: user.username,
     email: user.email,

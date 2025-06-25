@@ -24,7 +24,7 @@ beforeEach(async () => {
   });
 
   await agent.post('/api/s').send({
-    subsawName: 'TestSubsaw',
+    name: 'TestSubsaw',
     description: 'Description'
   });
 });
@@ -52,7 +52,7 @@ describe('POST /api/s/:name/leave', () => {
     expect(leaveRes.body.message).toBe('Left subsaw successfully');
 
     const me = await agent.get('/api/auth/me');
-    expect(me.body.subsawsJoined).not.toContainEqual(expect.objectContaining({ subsawName: 'testsubsaw' }));
+    expect(me.body.subsawsJoined).not.toContainEqual(expect.objectContaining({ name: 'testsubsaw' }));
   });
 
   test('User is not subscribed to the subsaw', async () => {

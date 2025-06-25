@@ -2,33 +2,32 @@ const Subsaw = require('@models/subsaw');
 const User = require('@models/user');
 
 const createSubsaw = async (req, res) => {
-
+  
   const user = req.user
-  const subsawName = req.body.subsawName  
+  const displayName = req.body.name
 
   // Check if subsaw name (normalized lowercase) already exists
-  const existing = await Subsaw.findOne({ subsawName: subsawName.toLowerCase() });
+  const existing = await Subsaw.findOne({ name: displayName.toLowerCase() });
   if (existing) {
     return res.status(409).json({ error: 'Subsaw name already exists' });
   }
-
+  
   // Create new subsaw and add creator as mod and subscriber
   const newSubsaw = new Subsaw({
-    displayName: subsawName,
-    subsawName: subsawName.toLowerCase(),
+    displayName,
+    name: displayName.toLowerCase(),
+    description: req.body.description,
     moderators: [user._id],
     subscribers: [user._id],
   });
+
   const savedSubsaw = await newSubsaw.save();
 
   // Add subsaw to user's list of joined subsaws
   user.subsawsJoined.push(savedSubsaw._id);
   await user.save();
 
-  newSubsaw.subscribers.push(user._id);
-  await newSubsaw.save();
-  
-  res.status(201).json(savedSubsaw);
+  res.status(201).json({message: "Subsaw created succesfully"})
 }
 
 const getSubsaw = async (req, res) => {
@@ -36,9 +35,16 @@ const getSubsaw = async (req, res) => {
   const subsaw = await Subsaw.findById(req.subsaw.id)
     .populate('moderators', 'displayName username');
   
+  const isModerator = req.user
+    ? subsaw.moderators.some(
+        mod => mod._id.toString() === req.user._id.toString()
+      )
+    : false;
+
+
   res.status(200).json({
-    id: subsaw._id.toString(),
-    subsawName: subsaw.subsawName,
+    _id: subsaw._id.toString(),
+    name: subsaw.name,
     displayName: subsaw.displayName,
     description: subsaw.description,
     date_created: subsaw.date_created,
@@ -46,9 +52,9 @@ const getSubsaw = async (req, res) => {
     bannerUrl: subsaw.bannerUrl,
     backgroundUrl: subsaw.backgroundUrl,
     iconUrl: subsaw.iconUrl,
-
+    isModerator,
     moderators: subsaw.moderators.map((mod) => ({
-      id: mod._id.toString(),
+      _id: mod._id.toString(),
       displayName: mod.displayName,
       username: mod.username
     }))
@@ -62,7 +68,7 @@ const joinSubsaw = async (req, res) => {
   const subsaw = req.subsaw
   
   // Check if user is already subscribed
-  const alreadyJoined = user.subsawsJoined.some(id => id.equals(subsaw._id));
+  const alreadyJoined = user.subsawsJoined.some(_id => _id.equals(subsaw._id));
   if (alreadyJoined) {
     return res.status(200).json({ message: 'Already joined' });
   }
@@ -120,7 +126,7 @@ const updateSubsaw = async (req, res) => {
   }
 
   // Allowed fields to patch
-  const allowedFields = ['description', 'bannerUrl', 'iconUrl', 'backgroundUrl'];
+  const allowedFields = ['description', 'bannerUrl', 'iconUrl', 'backgroundUrl', 'pfpUrl'];
   for (let key of Object.keys(updates)) {
     if (allowedFields.includes(key)) {
       subsaw[key] = updates[key];

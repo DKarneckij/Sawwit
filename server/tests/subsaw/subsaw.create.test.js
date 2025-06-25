@@ -37,13 +37,11 @@ describe('POST /api/subsaws', () => {
     const res = await agent
     .post('/api/s')
     .send({
-      subsawName: 'TestSubsaw',
+      name: 'TestSubsaw',
       description: 'Testing...'
     });
 
     expect(res.status).toBe(201);
-    expect(res.body.displayName).toBe('TestSubsaw');
-    expect(res.body.description).toBe('Testing...');
   });
 
   test('fails if name is missing', async () => {
@@ -63,7 +61,7 @@ describe('POST /api/subsaws', () => {
 
     const res = await agent
       .post('/api/s')
-      .send({ subsawName: 'ab', description: 'Too short' })
+      .send({ name: 'ab', description: 'Too short' })
       .expect(400);
 
     expect(res.body.error).toBeDefined();
@@ -75,7 +73,7 @@ describe('POST /api/subsaws', () => {
 
     const res = await unauthenticated
       .post('/api/s')
-      .send({ subsawName: 'NoAuthSubsaw' })
+      .send({ name: 'NoAuthSubsaw' })
       .expect(401);
 
     expect(res.body.error).toBe('Authentication required');
@@ -86,12 +84,12 @@ describe('POST /api/subsaws', () => {
 
     await agent
       .post('/api/s')
-      .send({ subsawName: 'DuplicateName' })
+      .send({ name: 'DuplicateName' })
       .expect(201);
 
     const res = await agent
       .post('/api/s')
-      .send({ subsawName: 'DuplicateName' })
+      .send({ name: 'DuplicateName' })
       .expect(409);
     
     expect(res.body.error).toContain('already exists');

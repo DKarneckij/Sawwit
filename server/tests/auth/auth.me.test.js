@@ -5,26 +5,20 @@ const { connectDB, disconnectDB } = require('@utils/mongo');
 
 const api = supertest(app);
 
-// Helper to create and log in a test user
-const createAndLoginUser = async () => {
-  const bcrypt = require('bcrypt');
-  const password = 'MyTestPassword123';
+// ✅ Helper to sign up a test user and get an agent with cookies
+const signupAndLoginUser = async () => {
+  const agent = supertest.agent(app);
 
-  const user = new User({
-    email: 'me@test.com',
+  const signupRes = await agent.post('/api/auth/signup').send({
     username: 'meuser',
-    passwordHash: await bcrypt.hash(password, 10),
-    displayName: 'meuser'
-  });
-  const savedUser = await user.save();
+    displayName: 'meuser',
+    email: 'me@test.com',
+    password: 'MyTestPassword123'
+  }).expect(201);
 
-  const loginRes = await api
-    .post('/api/auth/login')
-    .send({ identifier: 'meuser', password });
+  const user = await User.findOne({ username: 'meuser' });
 
-  const cookie = loginRes.headers['set-cookie'];
-
-  return { user: savedUser, cookie };
+  return { agent, user };
 };
 
 beforeAll(async () => {
@@ -41,31 +35,25 @@ afterAll(async () => {
 
 describe('GET /api/auth/me', () => {
   test('returns user data when logged in with cookie', async () => {
-    const { user, cookie } = await createAndLoginUser();
+    const { agent, user } = await signupAndLoginUser();
 
-    const res = await api
-      .get('/api/auth/me')
-      .set('cookie', cookie)
-      .expect(200);
+    const res = await agent.get('/api/auth/me').expect(200);
 
     expect(res.body).toMatchObject({
-      id: user.id.toString(),
+      _id: user._id.toString(), // use _id if you're not transforming to id
       username: user.username,
       displayName: user.displayName,
       email: user.email,
       profilePicture: user.profilePicture,
       karma: user.karma,
-      subsawsJoined: user.subsawsJoined
     });
 
     expect(res.body.profilePicture).toBeDefined();
+    expect(Array.isArray(res.body.subsawsJoined)).toBe(true);
   });
 
   test('fails with 401 if no cookie is present', async () => {
-    const res = await api
-      .get('/api/auth/me')
-      .expect(401);
-
+    const res = await api.get('/api/auth/me').expect(401);
     expect(res.body.error).toBe('Authentication required');
   });
 

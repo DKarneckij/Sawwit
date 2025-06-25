@@ -5,7 +5,7 @@ const User = require('@models/user');
 const { connectDB, disconnectDB } = require('@utils/mongo');
 
 const agent = supertest.agent(app);
-let subsawName = "PatchTestSub";
+let name = "PatchTestSub";
 
 beforeAll(async () => {
   await connectDB();
@@ -24,7 +24,7 @@ beforeEach(async () => {
 
   // Create subsaw
   await agent.post('/api/s').send({
-    subsawName,
+    name,
     description: 'Original description',
   });
 });
@@ -37,7 +37,7 @@ describe('PATCH /api/s/:name', () => {
 
   test('allows moderator to update description', async () => {
     const res = await agent
-      .patch(`/api/s/${subsawName}`)
+      .patch(`/api/s/${name}`)
       .send({ description: 'Updated description' })
       .expect(200);
 
@@ -49,7 +49,7 @@ describe('PATCH /api/s/:name', () => {
     const pfpUrl = 'https://cdn.example.com/pfp.png';
 
     const res = await agent
-      .patch(`/api/s/${subsawName}`)
+      .patch(`/api/s/${name}`)
       .send({ bannerUrl, pfpUrl })
       .expect(200);
 
@@ -68,7 +68,7 @@ describe('PATCH /api/s/:name', () => {
 
   test('rejects unrelated fields with 400', async () => {
     const res = await agent
-      .patch(`/api/s/${subsawName}`)
+      .patch(`/api/s/${name}`)
       .send({ madeUpField: 'something' })
       .expect(400);
   

@@ -1,7 +1,7 @@
 const { check } = require('express-validator');
 
 const validateCreateSubsaw = [
-  check('subsawName')
+  check('name')
     .trim()
     .isLength({ min: 3, max: 21 }).withMessage('Name must be 3-21 characters')
     .matches(/^[a-zA-Z0-9_]+$/).withMessage('Only letters, numbers, and underscores allowed'),

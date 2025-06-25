@@ -32,21 +32,21 @@ const signup = async () => {
 
 describe('GET /api/s/:name', () => {
 
-  test.only('returns subsaw info when it exists', async () => {
+  test('returns subsaw info when it exists', async () => {
 
     await signup();
     
-    const subsawName = "TestSubsaw"
-    
-    await agent.post('/api/s/').send({subsawName})
+    const name = "TestSubsaw"
+
+    await agent.post('/api/s/').send({name})
 
     const res = await agent.get(`/api/s/TestSubsaw`).expect(200);
-
-    expect(res.body.displayName).toBe(subsawName);
-    expect(res.body.subsawName).toBe(subsawName.toLowerCase());
+    
+    expect(res.body.displayName).toBe(name);
+    expect(res.body.name).toBe(name.toLowerCase());
     expect(res.body.description).toBe("This community does not have a description yet.");
     expect(res.body.moderators).toBeDefined();
-    expect(res.body.id).toBeDefined();
+    expect(res.body._id).toBeDefined();
   });
 
   test('returns 404 if subsaw does not exist', async () => {
@@ -58,11 +58,11 @@ describe('GET /api/s/:name', () => {
 
     await signup();
     
-    const subsawName = "TestSubsaw"
+    const name = "TestSubsaw"
     const description = "A cool place"
 
     await agent.post('/api/s/').send({
-      subsawName: 'FunnyStuff',
+      name: 'FunnyStuff',
       description: 'Haha yes',
     });
 
@@ -73,12 +73,12 @@ describe('GET /api/s/:name', () => {
   test('returns isModerator = true if requester is a mod', async () => {
     await signup();
   
-    const subsawName = "TestSubsaw";
+    const name = "TestSubsaw";
     const description = "Mod check";
   
-    await agent.post('/api/s/').send({ subsawName, description });
+    await agent.post('/api/s/').send({ name, description });
   
-    const res = await agent.get(`/api/s/${subsawName}`).expect(200);
+    const res = await agent.get(`/api/s/${name}`).expect(200);
     
     expect(res.body.isModerator).toBe(true);
   });

@@ -2,25 +2,21 @@ const supertest = require('supertest');
 const app = require('@app');
 const User = require('@models/user');
 const { connectDB, disconnectDB } = require('@utils/mongo');
+
 const api = supertest(app);
 
-// Helper to create and log in a user
-const createAndLoginUser = async () => {
-  const bcrypt = require('bcrypt');
-  const password = 'logoutPass123';
-  const passwordHash = await bcrypt.hash(password, 10);
-  const user = new User({
-    email: 'logout@test.com',
-    username: 'logoutUser',
-    displayName: 'logoutuser',
-    passwordHash
-  });
-  await user.save();
+// ✅ New helper to signup + login a user
+const signupAndLoginUser = async () => {
+  const agent = supertest.agent(app);
 
-  return await api.post('/api/auth/login').send({
-    identifier: 'logoutUser',
-    password
-  });
+  const signupRes = await agent.post('/api/auth/signup').send({
+    username: 'kirbussy',
+    displayName: 'Kirbussy',
+    email: 'kirbussy@test.com',
+    password: 'securePassword123'
+  }).expect(201);
+
+  return agent;
 };
 
 beforeAll(async () => {
@@ -37,13 +33,10 @@ afterAll(async () => {
 
 describe('POST /api/auth/logout', () => {
   test('clears the auth token cookie', async () => {
-    const loginRes = await createAndLoginUser();
-    const cookies = loginRes.headers['set-cookie'];
-    expect(cookies).toBeDefined();
+    const agent = await signupAndLoginUser();
 
-    const logoutRes = await api
+    const logoutRes = await agent
       .post('/api/auth/logout')
-      .set('Cookie', cookies)
       .expect(200);
 
     expect(logoutRes.body.message).toBe('Logged out successfully');

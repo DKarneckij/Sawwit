@@ -6,7 +6,7 @@ export const usePermission = () => {
   const { subsaw } = useSubsaw();
 
   const isModerator = user?.subsawsJoined?.some(
-    (s) => s.id === subsaw?.id && s.isModerator
+    (s) => s._id === subsaw?._id && s.isModerator
   );
 
   return {

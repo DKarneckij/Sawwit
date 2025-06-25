@@ -18,6 +18,7 @@ afterAll(async () => {
 });
 
 describe('Signup Route', () => {
+  
   test('should create a new user with valid fields', async () => {
     const res = await api.post('/api/auth/signup').send({
       username: 'kirbussy',
